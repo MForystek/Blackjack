@@ -1,6 +1,7 @@
 package logic;
 
-public enum Cards {
+public enum CardValues {
+    NULL(0),
     TWO(2),
     THREE(3),
     FOUR(4),
@@ -17,7 +18,7 @@ public enum Cards {
 
     private int value;
 
-    Cards(int value) {
+    CardValues(int value) {
         this.value = value;
     }
 

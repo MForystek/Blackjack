@@ -4,11 +4,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CardsTest {
+class CardValuesTest {
 
     @Test
     void changeAceValueForAce() {
-        Cards card = Cards.ACE;
+        CardValues card = CardValues.ACE;
         assertEquals(11, card.getValue());
 
         card.changeAceValue();
@@ -20,9 +20,9 @@ class CardsTest {
 
     @Test
     void changeAceValueForOtherCards() {
-        Cards card;
-        for (Cards currentCard : Cards.values()) {
-            if (currentCard.getValue() == Cards.ACE.getValue()) {
+        CardValues card;
+        for (CardValues currentCard : CardValues.values()) {
+            if (currentCard.getValue() == CardValues.ACE.getValue()) {
                 continue;
             }
             card = currentCard;
