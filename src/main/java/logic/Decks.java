@@ -47,6 +47,11 @@ public class Decks {
         return decks.pop();
     }
 
+    public Card lookAtNextCardFromTheTop() {
+        isThereAnyCardsLeft();
+        return decks.peek();
+    }
+
     private void isThereAnyCardsLeft() {
         if (isEmpty()) {
             throw new EmptyStackException();
@@ -56,6 +61,10 @@ public class Decks {
     public Card lookAtNextCardFromTheTop() {
         isThereAnyCardsLeft();
         return decks.peek();
+    }
+
+    protected void setDecks(Stack <Card> cards){
+        this.decks = cards;
     }
 
     public int getNumberOfDecks() {
