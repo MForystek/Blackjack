@@ -3,19 +3,61 @@ import java.sql.*;
 
 public class SqliteDB implements Database {
     Connection connection = null;
-    Statement statement = null;
 
     public SqliteDB() {
         try {
             Class.forName("org.sqlite.JDBC");
+            openConnection();
+            buildDB();
+            closeConnection();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
+    public void buildDB() {
+        try (Statement statement = connection.createStatement()){
+            statement.execute("CREATE TABLE IF NOT EXISTS \"users\" (\n" +
+                    "\t\"nick\"\tTEXT NOT NULL UNIQUE,\n" +
+                    "\t\"password\"\tTEXT NOT NULL,\n" +
+                    "\t\"winRate\"\tNUMERIC,\n" +
+                    "\t\"numOfGames\"\tINTEGER DEFAULT 0,\n" +
+                    "\t\"totalTime\"\tINTEGER DEFAULT 0,\n" +
+                    "\t\"twoNo\"\tINTEGER DEFAULT 0,\n" +
+                    "\t\"threeNo\"\tINTEGER DEFAULT 0,\n" +
+                    "\t\"fourNo\"\tINTEGER DEFAULT 0,\n" +
+                    "\t\"fiveNo\"\tINTEGER DEFAULT 0,\n" +
+                    "\t\"sixNo\"\tINTEGER DEFAULT 0,\n" +
+                    "\t\"sevenNo\"\tINTEGER DEFAULT 0,\n" +
+                    "\t\"eightNo\"\tINTEGER DEFAULT 0,\n" +
+                    "\t\"nineNo\"\tINTEGER DEFAULT 0,\n" +
+                    "\t\"tenNo\"\tINTEGER DEFAULT 0,\n" +
+                    "\t\"jackNo\"\tINTEGER DEFAULT 0,\n" +
+                    "\t\"queenNo\"\tINTEGER DEFAULT 0,\n" +
+                    "\t\"kingNo\"\tINTEGER DEFAULT 0,\n" +
+                    "\t\"aceNo\"\tINTEGER DEFAULT 0\n" +
+                    ")");
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void fillForTests() {
+        try (Statement statement = connection.createStatement()){
+            statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numOfGames', 'totalTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
+                    "VALUES('jack', 'mandera', '99.99', '10000', '9090', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '15');");
+            statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numOfGames', 'totalTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
+                    "VALUES('ironMan', 'iamironman', '100', '10000', '9090', '7898', '78', '3', '345', '5', '0', '56', '6', '12', '7', '187', '634', '1486');");
+            statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numOfGames', 'totalTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
+                    "VALUES('szymon', 'hasło', '50', '12', '4', '29', '39', '49', '59', '99', '79', '89', '99', '109', '119', '129', '139', '159');");
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
     public void openConnection() {
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:sqlitedb.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:test.db");
             System.out.println("Connected to DB");
         } catch (Exception e) {
             System.out.println("Error connecting to DB: " + e.getMessage());
@@ -32,8 +74,7 @@ public class SqliteDB implements Database {
     }
 
     public void printUsers() {
-        try {
-            this.statement = connection.createStatement();
+        try (Statement statement = connection.createStatement()){
             ResultSet resultSet = statement.executeQuery("SELECT * FROM users");
 
             while(resultSet.next()) {

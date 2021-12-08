@@ -1,4 +1,5 @@
 .idea
 Blackjack.iml
 target
+*.db
 src/main/resources/SkinDeck.png
