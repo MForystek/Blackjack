@@ -16,17 +16,25 @@ public class SqliteDB implements Database {
         }
     }
 
-    public boolean putNewUser(String nick, String password) {
+    public void putNewUser(String nick, String password) {
         if (isNickAvailable(nick)) {
             try (Statement statement = connection.createStatement()) {
                 statement.execute("INSERT INTO users ('nick', 'password') " +
                         "VALUES('" + nick + "', '" + password + "');");
-                return true;
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
             }
         }
-        return false;
+    }
+
+    public void deleteUser(String nick) {
+        if (!isNickAvailable(nick)) {
+            try (Statement statement = connection.createStatement()) {
+                statement.execute("DELETE FROM users WHERE nick = '" + nick + "';");
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
     }
 
     public boolean isNickAvailable(String nick) {
