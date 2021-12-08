@@ -1,4 +1,6 @@
 package Database;
+import logic.Statistics;
+
 import java.sql.*;
 
 public class SqliteDB implements Database {
@@ -54,7 +56,7 @@ public class SqliteDB implements Database {
                     "\t\"password\"\tTEXT NOT NULL,\n" +
                     "\t\"winRate\"\tNUMERIC,\n" +
                     "\t\"numOfGames\"\tINTEGER DEFAULT 0,\n" +
-                    "\t\"totalTime\"\tINTEGER DEFAULT 0,\n" +
+                    "\t\"gameTime\"\tINTEGER DEFAULT 0,\n" +
                     "\t\"twoNo\"\tINTEGER DEFAULT 0,\n" +
                     "\t\"threeNo\"\tINTEGER DEFAULT 0,\n" +
                     "\t\"fourNo\"\tINTEGER DEFAULT 0,\n" +
