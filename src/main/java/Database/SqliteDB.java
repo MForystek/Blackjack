@@ -3,6 +3,7 @@ import java.sql.*;
 
 public class SqliteDB implements Database {
     Connection connection = null;
+    String filName = "test.db";
 
     public SqliteDB() {
         try {
@@ -13,6 +14,16 @@ public class SqliteDB implements Database {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public boolean isNickAvailable(String nick) throws Exception {
+        try (Statement statement = connection.createStatement()){
+            ResultSet resultSet = statement.executeQuery("SELECT nick FROM users WHERE nick = '" + nick + "'");
+            return !resultSet.next();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return false;
     }
 
     public void buildDB() {
@@ -43,13 +54,19 @@ public class SqliteDB implements Database {
     }
 
     public void fillForTests() {
-        try (Statement statement = connection.createStatement()){
-            statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numOfGames', 'totalTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
-                    "VALUES('jack', 'mandera', '99.99', '10000', '9090', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '15');");
-            statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numOfGames', 'totalTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
-                    "VALUES('ironMan', 'iamironman', '100', '10000', '9090', '7898', '78', '3', '345', '5', '0', '56', '6', '12', '7', '187', '634', '1486');");
-            statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numOfGames', 'totalTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
-                    "VALUES('szymon', 'hasło', '50', '12', '4', '29', '39', '49', '59', '99', '79', '89', '99', '109', '119', '129', '139', '159');");
+        try (Statement statement = connection.createStatement()) {
+            if (isNickAvailable("jack")) {
+                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numOfGames', 'totalTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
+                        "VALUES('jack', 'mandera', '99.99', '10000', '9090', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '15');");
+            }
+            if (isNickAvailable("ironMan")) {
+                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numOfGames', 'totalTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
+                        "VALUES('ironMan', 'iamironman', '100', '10000', '9090', '7898', '78', '3', '345', '5', '0', '56', '6', '12', '7', '187', '634', '1486');");
+            }
+            if (isNickAvailable("szymon")) {
+                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numOfGames', 'totalTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
+                        "VALUES('szymon', 'hasło', '50', '12', '4', '29', '39', '49', '59', '99', '79', '89', '99', '109', '119', '129', '139', '159');");
+            }
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -57,7 +74,7 @@ public class SqliteDB implements Database {
 
     public void openConnection() {
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:test.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:" + filName);
             System.out.println("Connected to DB");
         } catch (Exception e) {
             System.out.println("Error connecting to DB: " + e.getMessage());
@@ -73,7 +90,7 @@ public class SqliteDB implements Database {
         }
     }
 
-    public void printUsers() {
+    private void printUsers() {
         try (Statement statement = connection.createStatement()){
             ResultSet resultSet = statement.executeQuery("SELECT * FROM users");
 
