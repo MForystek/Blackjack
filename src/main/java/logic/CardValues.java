@@ -1,7 +1,6 @@
 package logic;
 
-public enum CardValues {
-    NULL(0),
+public enum CardValues implements Comparable<CardValues> {
     TWO(2),
     THREE(3),
     FOUR(4),
