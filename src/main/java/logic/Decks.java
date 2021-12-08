@@ -47,15 +47,15 @@ public class Decks {
         return decks.pop();
     }
 
+    public Card lookAtNextCardFromTheTop() {
+        isThereAnyCardsLeft();
+        return decks.peek();
+    }
+
     private void isThereAnyCardsLeft() {
         if (isEmpty()) {
             throw new EmptyStackException();
         }
-    }
-
-    public Card lookAtNextCardFromTheTop() {
-        isThereAnyCardsLeft();
-        return decks.peek();
     }
 
     public int getNumberOfDecks() {
