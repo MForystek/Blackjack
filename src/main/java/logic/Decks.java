@@ -58,6 +58,10 @@ public class Decks {
         return decks.peek();
     }
 
+    protected void setDecks(Stack <Card> cards){
+        this.decks = cards;
+    }
+
     public int getNumberOfDecks() {
         return numberOfDecks;
     }
