@@ -3,13 +3,12 @@ package logic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Stack;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AITest {
-    private AI ai;
+public class HardBotTest {
+    private HardBot ai;
     private Decks deck;
 
     @BeforeEach
@@ -33,34 +32,34 @@ public class AITest {
         deck = new Decks(1);
         deck.setDecks(cards);
 
-        ai = new AI("nick", deck);
+        ai = new HardBot("nick", deck);
     }
 
     @Test
-    void pickCard2(){
-        assertEquals(true, ai.pickCard2());
-        assertEquals(true, ai.pickCard2());
-        assertEquals(true, ai.pickCard2());
-        assertEquals(true, ai.pickCard2());
-        assertEquals(true, ai.pickCard2());
-        assertEquals(false, ai.is_ended);
-        assertEquals(false, ai.pickCard2());
-        assertEquals(true, ai.is_ended);
-        assertEquals(false, ai.pickCard2());
+    void pickCard(){
+        assertEquals(true, ai.pickCard());
+        assertEquals(true, ai.pickCard());
+        assertEquals(true, ai.pickCard());
+        assertEquals(true, ai.pickCard());
+        assertEquals(true, ai.pickCard());
+        assertEquals(false, ai.getIsEnded());
+        assertEquals(false, ai.pickCard());
+        assertEquals(true, ai.getIsEnded());
+        assertEquals(false, ai.pickCard());
 
         ai.clearGameData();
 
         // 7, 8, 9...
-        assertEquals(true, ai.pickCard2());
-        assertEquals(true, ai.pickCard2());
-        assertEquals(true, ai.pickCard2());
-        assertEquals(false, ai.pickCard2());
-        assertEquals(true, ai.is_ended);
+        assertEquals(true, ai.pickCard());
+        assertEquals(true, ai.pickCard());
+        assertEquals(true, ai.pickCard());
+        assertEquals(false, ai.pickCard());
+        assertEquals(true, ai.getIsEnded());
 
         ai.clearGameData();
-        assertEquals(true, ai.pickCard2());
-        assertEquals(true, ai.pickCard2());
-        assertEquals(false, ai.pickCard2());
+        assertEquals(true, ai.pickCard());
+        assertEquals(true, ai.pickCard());
+        assertEquals(false, ai.pickCard());
 
     }
 }
