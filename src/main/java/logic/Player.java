@@ -3,10 +3,10 @@ package logic;
 import java.util.ArrayList;
 
 public class Player {
-    public String nick;
-    public Statistics statistics;
-    public ArrayList <Card> cards = new ArrayList<>();
-    public boolean is_ended = false;
+    private String nick;
+    private Statistics statistics;
+    private ArrayList <Card> cards = new ArrayList<>();
+    private boolean isEnded = false;
 
     public Player(String nick) {
         this.nick = nick;
@@ -17,7 +17,7 @@ public class Player {
     }
 
     public void clearGameData(){
-        this.is_ended = false;
+        this.isEnded = false;
         this.cards.clear();
     }
 
@@ -47,4 +47,11 @@ public class Player {
         this.cards = cards;
     }
 
+    public boolean getIsEnded() {
+        return isEnded;
+    }
+
+    public void setIsEnded(boolean ended) {
+        isEnded = ended;
+    }
 }

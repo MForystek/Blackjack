@@ -58,11 +58,6 @@ public class Decks {
         }
     }
 
-    public Card lookAtNextCardFromTheTop() {
-        isThereAnyCardsLeft();
-        return decks.peek();
-    }
-
     protected void setDecks(Stack <Card> cards){
         this.decks = cards;
     }

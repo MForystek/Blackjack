@@ -13,7 +13,7 @@ public class UserTest {
     @BeforeEach
     void beforeEach() {
         user = new User();
-        user.password = "secret";
+        user.setPassword("secret");
     }
 
     @Test
