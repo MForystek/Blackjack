@@ -72,8 +72,9 @@ public class SqliteDB implements Database {
             ResultSet resultSet = statement.executeQuery("SELECT * FROM users");
             return resultSet.getString("password");
         } catch (Exception e) {
-            throw e;
+            System.out.println(e.getMessage());
         }
+        return null;
     }
 
     public Statistics getStatistics(String nick) throws SQLException {
@@ -102,8 +103,9 @@ public class SqliteDB implements Database {
                     resultSet.getInt(this.aceNo));
             return statistics;
         } catch (Exception e) {
-            throw e;
+            System.out.println(e.getMessage());
         }
+        return null;
     }
 
     public void setStatistics(String nick, Statistics statistics) throws SQLException {
