@@ -1,4 +1,5 @@
 package Database;
+import logic.CardValues;
 import logic.Statistics;
 
 import java.sql.*;
@@ -64,7 +65,7 @@ public class SqliteDB implements Database {
     }
 
     public String getPassword(String nick) throws SQLException {
-        if (!isNickAvailable(nick)) {
+        if (isNickAvailable(nick)) {
             throw new SQLException("No such user");
         }
         try (Statement statement = connection.createStatement()) {
@@ -77,7 +78,7 @@ public class SqliteDB implements Database {
 
     public Statistics getStatistics(String nick) throws SQLException {
         Statistics statistics = new Statistics();
-        if (!isNickAvailable(nick)) {
+        if (isNickAvailable(nick)) {
             throw new SQLException("No such user");
         }
         try (Statement statement = this.connection.createStatement()) {
@@ -106,16 +107,32 @@ public class SqliteDB implements Database {
     }
 
     public void setStatistics(String nick, Statistics statistics) throws SQLException {
-        if (!isNickAvailable(nick)) {
+        if (isNickAvailable(nick)) {
             throw new SQLException("No such user");
         }
-//        try (Statement statement = connection.createStatement()) {
-//            statement.execute("INSERT INTO users ('nick', 'password') " +
-//                    "VALUES('" + nick + "', '" + password + "');");
-//        } catch (Exception e) {
-//            System.out.println("Error: " + e.getMessage());
-//        }
-
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("UPDATE " + this.users + " SET " +
+                    this.winRate + " = " + statistics.getWinRate() + ", " +
+                    this.numberOfGames + " = " + statistics.getNumberOfGames() + ", " +
+                    this.gameTime + " = " + statistics.getGameTime() + ", " +
+                    this.twoNo + " = " + statistics.getCardOccurrence(CardValues.TWO) + ", " +
+                    this.threeNo + " = " + statistics.getCardOccurrence(CardValues.THREE) + ", " +
+                    this.fourNo + " = " + statistics.getCardOccurrence(CardValues.FOUR) + ", " +
+                    this.fiveNo + " = " + statistics.getCardOccurrence(CardValues.FIVE) + ", " +
+                    this.sixNo + " = " + statistics.getCardOccurrence(CardValues.SIX) + ", " +
+                    this.sevenNo + " = " + statistics.getCardOccurrence(CardValues.SEVEN) + ", " +
+                    this.eightNo + " = " + statistics.getCardOccurrence(CardValues.EIGHT) + ", " +
+                    this.nineNo + " = " + statistics.getCardOccurrence(CardValues.NINE) + ", " +
+                    this.tenNo + " = " + statistics.getCardOccurrence(CardValues.TEN) + ", " +
+                    this.jackNo + " = " + statistics.getCardOccurrence(CardValues.JACK) + ", " +
+                    this.queenNo + " = " + statistics.getCardOccurrence(CardValues.QUEEN) + ", " +
+                    this.kingNo + " = " + statistics.getCardOccurrence(CardValues.KING) + ", " +
+                    this.aceNo + " = " + statistics.getCardOccurrence(CardValues.ACE) +
+                    " WHERE " + this.nick + " = \"" + nick + "\";"
+            );
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
     private boolean isNickAvailable(String nick) {
