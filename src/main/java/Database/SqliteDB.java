@@ -6,6 +6,26 @@ import java.sql.*;
 public class SqliteDB implements Database {
     Connection connection = null;
     String filName = "test.db";
+    String users = "users";
+    String nick = "nick";
+    String password = "password";
+    String winRate = "winRate";
+    String numberOfGames = "numberOfGames";
+    String gameTime = "gameTime";
+    String twoNo = "twoNo";
+    String threeNo = "threeNo";
+    String fourNo = "fourNo";
+    String fiveNo = "fiveNo";
+    String sixNo = "sixNo";
+    String sevenNo = "sevenNo";
+    String eightNo = "eightNo";
+    String nineNo = "nineNo";
+    String tenNo = "tenNo";
+    String jackNo = "jackNo";
+    String queenNo = "queenNo";
+    String kingNo = "kingNo";
+    String aceNo = "aceNo";
+
 
     public SqliteDB() {
         try {
@@ -60,29 +80,42 @@ public class SqliteDB implements Database {
         if (!isNickAvailable(nick)) {
             throw new SQLException("No such user");
         }
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM users");
-            statistics.setWinRate(resultSet.getFloat("winRate"));
-            statistics.setNumberOfGames(resultSet.getInt("numberOfGames"));
-            statistics.setGameTime(resultSet.getInt("gameTime"));
+        try (Statement statement = this.connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + this.users);
+            statistics.setWinRate(resultSet.getFloat(this.winRate));
+            statistics.setNumberOfGames(resultSet.getInt(this.numberOfGames));
+            statistics.setGameTime(resultSet.getInt(this.gameTime));
             statistics.setCardHistory(
-                    resultSet.getInt("twoNo"),
-                    resultSet.getInt("threeNo"),
-                    resultSet.getInt("fourNo"),
-                    resultSet.getInt("fiveNo"),
-                    resultSet.getInt("sixNo"),
-                    resultSet.getInt("sevenNo"),
-                    resultSet.getInt("eightNo"),
-                    resultSet.getInt("nineNo"),
-                    resultSet.getInt("tenNo"),
-                    resultSet.getInt("jackNo"),
-                    resultSet.getInt("queenNo"),
-                    resultSet.getInt("kingNo"),
-                    resultSet.getInt("aceNo"));
+                    resultSet.getInt(this.twoNo),
+                    resultSet.getInt(this.threeNo),
+                    resultSet.getInt(this.fourNo),
+                    resultSet.getInt(this.fiveNo),
+                    resultSet.getInt(this.sixNo),
+                    resultSet.getInt(this.sevenNo),
+                    resultSet.getInt(this.eightNo),
+                    resultSet.getInt(this.nineNo),
+                    resultSet.getInt(this.tenNo),
+                    resultSet.getInt(this.jackNo),
+                    resultSet.getInt(this.queenNo),
+                    resultSet.getInt(this.kingNo),
+                    resultSet.getInt(this.aceNo));
             return statistics;
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    public void setStatistics(String nick, Statistics statistics) throws SQLException {
+        if (!isNickAvailable(nick)) {
+            throw new SQLException("No such user");
+        }
+//        try (Statement statement = connection.createStatement()) {
+//            statement.execute("INSERT INTO users ('nick', 'password') " +
+//                    "VALUES('" + nick + "', '" + password + "');");
+//        } catch (Exception e) {
+//            System.out.println("Error: " + e.getMessage());
+//        }
+
     }
 
     private boolean isNickAvailable(String nick) {
@@ -97,25 +130,25 @@ public class SqliteDB implements Database {
 
     public void buildDB() {
         try (Statement statement = connection.createStatement()){
-            statement.execute("CREATE TABLE IF NOT EXISTS \"users\" (\n" +
-                    "\t\"nick\"\tTEXT NOT NULL UNIQUE,\n" +
-                    "\t\"password\"\tTEXT NOT NULL,\n" +
-                    "\t\"winRate\"\tNUMERIC,\n" +
-                    "\t\"numberOfGames\"\tINTEGER DEFAULT 0,\n" +
-                    "\t\"gameTime\"\tINTEGER DEFAULT 0,\n" +
-                    "\t\"twoNo\"\tINTEGER DEFAULT 0,\n" +
-                    "\t\"threeNo\"\tINTEGER DEFAULT 0,\n" +
-                    "\t\"fourNo\"\tINTEGER DEFAULT 0,\n" +
-                    "\t\"fiveNo\"\tINTEGER DEFAULT 0,\n" +
-                    "\t\"sixNo\"\tINTEGER DEFAULT 0,\n" +
-                    "\t\"sevenNo\"\tINTEGER DEFAULT 0,\n" +
-                    "\t\"eightNo\"\tINTEGER DEFAULT 0,\n" +
-                    "\t\"nineNo\"\tINTEGER DEFAULT 0,\n" +
-                    "\t\"tenNo\"\tINTEGER DEFAULT 0,\n" +
-                    "\t\"jackNo\"\tINTEGER DEFAULT 0,\n" +
-                    "\t\"queenNo\"\tINTEGER DEFAULT 0,\n" +
-                    "\t\"kingNo\"\tINTEGER DEFAULT 0,\n" +
-                    "\t\"aceNo\"\tINTEGER DEFAULT 0\n" +
+            statement.execute("CREATE TABLE IF NOT EXISTS " + this.users + " (\n" +
+                    "\t" + this.nick + "\tTEXT NOT NULL UNIQUE,\n" +
+                    "\t" + this.password + "\tTEXT NOT NULL,\n" +
+                    "\t" + this.winRate + "\tNUMERIC,\n" +
+                    "\t" + this.numberOfGames + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + this.gameTime + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + this.twoNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + this.threeNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + this.fourNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + this.fiveNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + this.sixNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + this.sevenNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + this.eightNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + this.nineNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + this.tenNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + this.jackNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + this.queenNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + this.kingNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + this.aceNo + "\tINTEGER DEFAULT 0\n" +
                     ")");
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -125,15 +158,15 @@ public class SqliteDB implements Database {
     public void fillForTests() {
         try (Statement statement = connection.createStatement()) {
             if (isNickAvailable("jack")) {
-                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numOfGames', 'totalTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
+                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
                         "VALUES('jack', 'mandera', '99.99', '10000', '9090', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '15');");
             }
             if (isNickAvailable("ironMan")) {
-                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numOfGames', 'totalTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
+                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
                         "VALUES('ironMan', 'iamironman', '100', '10000', '9090', '7898', '78', '3', '345', '5', '0', '56', '6', '12', '7', '187', '634', '1486');");
             }
             if (isNickAvailable("szymon")) {
-                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numOfGames', 'totalTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
+                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
                         "VALUES('szymon', 'hasło', '50', '12', '4', '29', '39', '49', '59', '99', '79', '89', '99', '109', '119', '129', '139', '159');");
             }
         } catch (Exception e) {
