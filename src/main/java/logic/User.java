@@ -1,9 +1,9 @@
 package logic;
 
 public class User {
-    public String nick;
-    public String password;
-    public Player player;
+    private String nick;
+    private String password;
+    private Player player;
 
     public boolean changePassword(String oldPassword, String newPassword) {
         if (this.password.equals(oldPassword)) {
