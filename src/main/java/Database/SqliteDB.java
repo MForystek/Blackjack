@@ -18,37 +18,71 @@ public class SqliteDB implements Database {
         }
     }
 
-    public void putNewUser(String nick, String password) {
-        if (isNickAvailable(nick)) {
-            try (Statement statement = connection.createStatement()) {
-                statement.execute("INSERT INTO users ('nick', 'password') " +
-                        "VALUES('" + nick + "', '" + password + "');");
-            } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
-            }
+    public void putNewUser(String nick, String password) throws SQLException {
+        if (!isNickAvailable(nick)) {
+            throw new SQLException("Error: user with this nick already exists");
+        }
+
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("INSERT INTO users ('nick', 'password') " +
+                    "VALUES('" + nick + "', '" + password + "');");
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
-    public void deleteUser(String nick) {
+    public void deleteUser(String nick) throws SQLException{
         if (!isNickAvailable(nick)) {
             try (Statement statement = connection.createStatement()) {
                 statement.execute("DELETE FROM users WHERE nick = '" + nick + "';");
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
             }
+        } else {
+            throw new SQLException("No such user");
         }
     }
 
-    public String getPassword(String nick) {
+    public String getPassword(String nick) throws SQLException {
         if (!isNickAvailable(nick)) {
-            try (Statement statement = connection.createStatement()) {
-                ResultSet resultSet = statement.executeQuery("SELECT * FROM users");
-                return resultSet.getString("password");
-            } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
-            }
+            throw new SQLException("No such user");
         }
-        return null;
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM users");
+            return resultSet.getString("password");
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public Statistics getStatistics(String nick) throws SQLException {
+        Statistics statistics = new Statistics();
+        if (!isNickAvailable(nick)) {
+            throw new SQLException("No such user");
+        }
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM users");
+            statistics.setWinRate(resultSet.getFloat("winRate"));
+            statistics.setNumberOfGames(resultSet.getInt("numberOfGames"));
+            statistics.setGameTime(resultSet.getInt("gameTime"));
+            statistics.setCardHistory(
+                    resultSet.getInt("twoNo"),
+                    resultSet.getInt("threeNo"),
+                    resultSet.getInt("fourNo"),
+                    resultSet.getInt("fiveNo"),
+                    resultSet.getInt("sixNo"),
+                    resultSet.getInt("sevenNo"),
+                    resultSet.getInt("eightNo"),
+                    resultSet.getInt("nineNo"),
+                    resultSet.getInt("tenNo"),
+                    resultSet.getInt("jackNo"),
+                    resultSet.getInt("queenNo"),
+                    resultSet.getInt("kingNo"),
+                    resultSet.getInt("aceNo"));
+            return statistics;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     private boolean isNickAvailable(String nick) {
@@ -67,7 +101,7 @@ public class SqliteDB implements Database {
                     "\t\"nick\"\tTEXT NOT NULL UNIQUE,\n" +
                     "\t\"password\"\tTEXT NOT NULL,\n" +
                     "\t\"winRate\"\tNUMERIC,\n" +
-                    "\t\"numOfGames\"\tINTEGER DEFAULT 0,\n" +
+                    "\t\"numberOfGames\"\tINTEGER DEFAULT 0,\n" +
                     "\t\"gameTime\"\tINTEGER DEFAULT 0,\n" +
                     "\t\"twoNo\"\tINTEGER DEFAULT 0,\n" +
                     "\t\"threeNo\"\tINTEGER DEFAULT 0,\n" +
