@@ -16,7 +16,6 @@ public class Decks {
         }
         this.numberOfDecks = numberOfDecks;
         fillDecksWithCards();
-        shuffle();
     }
 
     public void fillDecksWithCards() {
@@ -28,9 +27,6 @@ public class Decks {
                 }
             }
         }
-    }
-
-    public void shuffle() {
         Collections.shuffle(decks);
     }
 
