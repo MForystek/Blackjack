@@ -1,4 +1,4 @@
-package logic;
+package gameLogic.cards;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ class DecksTest {
         for (int i = 0; i < decks.getNumberOfDecks(); i++) {
             for (CardColors cardColor : CardColors.values()) {
                 for (CardValues cardValue : CardValues.values()) {
-                    Card nextCard = decks.takeCardFromTheTop();
+                    Card nextCard = decks.takeNextCard();
                     if (!nextCard.equals(new Card(cardColor, cardValue))) {
                         cardsShuffled++;
                     }
@@ -47,7 +47,7 @@ class DecksTest {
             tempDecks = new Decks(i);
             sortedCards = new ArrayList<>();
             for (int j = 0; j < tempDecks.getDecksMaxSize(); j++) {
-                sortedCards.add(tempDecks.takeCardFromTheTop());
+                sortedCards.add(tempDecks.takeNextCard());
             }
             Collections.sort(sortedCards);
 

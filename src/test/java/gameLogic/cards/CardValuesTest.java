@@ -1,5 +1,6 @@
-package logic;
+package gameLogic.cards;
 
+import gameLogic.cards.CardValues;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

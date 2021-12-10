@@ -1,6 +1,6 @@
 package Database;
-import logic.CardValues;
-import logic.Statistics;
+import gameLogic.cards.CardValues;
+import applicationLogic.Statistics;
 
 import java.sql.*;
 
@@ -138,7 +138,7 @@ public class SqliteDB implements Database {
         }
     }
 
-    private void printUsers() {
+    public void printUsers() {
         try (Statement statement = connection.createStatement()){
             ResultSet resultSet = statement.executeQuery("SELECT * FROM users");
 

@@ -1,11 +1,15 @@
-package logic;
+package applicationLogic;
 
+import gameLogic.cards.Card;
+import gameLogic.cards.CardColors;
+import gameLogic.cards.CardValues;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StatisticsTest {
     private Statistics statistics;
@@ -17,7 +21,7 @@ public class StatisticsTest {
 
     @Test
     void updateStatistics() {
-        ArrayList<Card> cards = new ArrayList<>();
+        List<Card> cards = new ArrayList<>();
 
         statistics.updateStatistics(true, cards, 100);
 
@@ -40,16 +44,14 @@ public class StatisticsTest {
         assertEquals(2, statistics.getCardOccurrence(king));
         assertEquals(0, statistics.getCardHistory().get(CardValues.ACE));
         assertEquals(0, statistics.getCardOccurrence(new Card(CardColors.DIAMONDS, CardValues.ACE)));
-
     }
 
     @Test
-    void setCardHistory(){
+    void setCardHistory() {
         statistics.setCardHistory(0, 1, 2, 3, 4, 5, 6,
                                 7, 8, 9, 10, 11, 12);
         assertEquals(0, statistics.getCardHistory().get(CardValues.TWO));
         assertEquals(1, statistics.getCardHistory().get(CardValues.THREE));
         assertEquals(12, statistics.getCardOccurrence(CardValues.ACE));
-
     }
 }

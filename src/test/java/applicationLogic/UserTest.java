@@ -1,9 +1,7 @@
-package logic;
+package applicationLogic;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -17,7 +15,7 @@ public class UserTest {
     }
 
     @Test
-    void changePassword(){
+    void changePassword() {
         user.changePassword("s", "newSecret");
         assertEquals("secret", user.getPassword());
 

@@ -1,4 +1,4 @@
-package logic;
+package gameLogic.cards;
 
 import java.util.Collections;
 import java.util.EmptyStackException;
@@ -38,14 +38,12 @@ public class Decks {
         return decks.isEmpty();
     }
 
-    public Card takeCardFromTheTop() {
+    /**
+     * @return returns top Card from Decks and removes it from Decks
+     */
+    public Card takeNextCard() {
         isThereAnyCardsLeft();
         return decks.pop();
-    }
-
-    public Card lookAtNextCardFromTheTop() {
-        isThereAnyCardsLeft();
-        return decks.peek();
     }
 
     private void isThereAnyCardsLeft() {
@@ -54,7 +52,30 @@ public class Decks {
         }
     }
 
-    protected void setDecks(Stack <Card> cards){
+    /**
+     * @return returns top Card from Decks without removing it from Decks
+     */
+    public Card getNextCard() {
+        isThereAnyCardsLeft();
+        return decks.peek();
+    }
+
+    /**
+     * @return returns int value of the next Card
+     */
+    public int getValueOfNextCard() {
+        return getNextCard().getValue();
+    }
+
+    public CardValues getCardValueOfNextCard() {
+        return getNextCard().getCardValue();
+    }
+
+    public CardColors getCardColorOfNextCard() {
+        return getNextCard().getCardColor();
+    }
+
+    public void setDecks(Stack<Card> cards){
         this.decks = cards;
     }
 

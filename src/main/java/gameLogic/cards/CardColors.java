@@ -1,4 +1,4 @@
-package logic;
+package gameLogic.cards;
 
 public enum CardColors implements Comparable<CardColors> {
     HEARTS,
