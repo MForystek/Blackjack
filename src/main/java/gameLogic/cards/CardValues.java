@@ -1,4 +1,4 @@
-package logic;
+package gameLogic.cards;
 
 public enum CardValues implements Comparable<CardValues> {
     TWO(2),

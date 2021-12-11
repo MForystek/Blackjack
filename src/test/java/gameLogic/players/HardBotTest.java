@@ -1,11 +1,15 @@
-package logic;
+package gameLogic.players;
 
+import gameLogic.cards.Decks;
+import gameLogic.cards.Card;
+import gameLogic.cards.CardColors;
+import gameLogic.cards.CardValues;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Stack;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HardBotTest {
     private HardBot ai;
@@ -37,29 +41,28 @@ public class HardBotTest {
 
     @Test
     void pickCard(){
-        assertEquals(true, ai.pickCard());
-        assertEquals(true, ai.pickCard());
-        assertEquals(true, ai.pickCard());
-        assertEquals(true, ai.pickCard());
-        assertEquals(true, ai.pickCard());
-        assertEquals(false, ai.getIsEnded());
-        assertEquals(false, ai.pickCard());
-        assertEquals(true, ai.getIsEnded());
-        assertEquals(false, ai.pickCard());
+        assertTrue(ai.pickCard());
+        assertTrue(ai.pickCard());
+        assertTrue(ai.pickCard());
+        assertTrue(ai.pickCard());
+        assertTrue(ai.pickCard());
+        assertFalse(ai.isEnded());
+        assertFalse(ai.pickCard());
+        assertTrue(ai.isEnded());
+        assertFalse(ai.pickCard());
 
         ai.clearGameData();
 
         // 7, 8, 9...
-        assertEquals(true, ai.pickCard());
-        assertEquals(true, ai.pickCard());
-        assertEquals(true, ai.pickCard());
-        assertEquals(false, ai.pickCard());
-        assertEquals(true, ai.getIsEnded());
+        assertTrue(ai.pickCard());
+        assertTrue(ai.pickCard());
+        assertTrue(ai.pickCard());
+        assertFalse(ai.pickCard());
+        assertTrue(ai.isEnded());
 
         ai.clearGameData();
-        assertEquals(true, ai.pickCard());
-        assertEquals(true, ai.pickCard());
-        assertEquals(false, ai.pickCard());
-
+        assertTrue(ai.pickCard());
+        assertTrue(ai.pickCard());
+        assertFalse(ai.pickCard());
     }
 }

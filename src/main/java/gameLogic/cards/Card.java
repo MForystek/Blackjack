@@ -1,4 +1,4 @@
-package logic;
+package gameLogic.cards;
 
 public class Card implements Comparable<Card> {
     private CardValues cardValue;
@@ -25,6 +25,10 @@ public class Card implements Comparable<Card> {
 
     public CardValues getCardValue() {
         return cardValue;
+    }
+
+    public int getValue() {
+        return cardValue.getValue();
     }
 
     @Override
