@@ -115,11 +115,9 @@ public class Game {
             makePlayersWithBlackjackWinners();
         }
         if (dealer.getTotalPoints() > MAX_ALLOWED_POINTS_THRESHOLD) {
-            makePlayersWithMorePointsThanDealerWinners();
+            makePlayersWithAllowedAmountOfPointsWinners();
         }
-        players.stream()
-                .filter(hasAllowedAmountOfPoints().and(hasMorePointsThanDealer()))
-                .forEach(Player::setWinner);
+        makePlayersWithAllowedAmountAndMorePointsThanDealerWinners();
         gameDurationInMilliseconds = System.currentTimeMillis() - gameDurationInMilliseconds;
     }
 
@@ -129,7 +127,7 @@ public class Game {
                 .forEach(Player::setWinner);
     }
 
-    private void makePlayersWithMorePointsThanDealerWinners() {
+    private void makePlayersWithAllowedAmountOfPointsWinners() {
         players.stream()
                 .filter(hasAllowedAmountOfPoints())
                 .forEach(Player::setWinner);
@@ -137,6 +135,12 @@ public class Game {
 
     private Predicate<Player> hasAllowedAmountOfPoints() {
         return player -> player.getTotalPoints() <= MAX_ALLOWED_POINTS_THRESHOLD;
+    }
+
+    private void makePlayersWithAllowedAmountAndMorePointsThanDealerWinners() {
+        players.stream()
+                .filter(hasAllowedAmountOfPoints().and(hasMorePointsThanDealer()))
+                .forEach(Player::setWinner);
     }
 
     private Predicate<Player> hasMorePointsThanDealer() {
