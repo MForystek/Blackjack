@@ -6,12 +6,14 @@ import java.util.Stack;
 
 public class Decks {
     public static final int NUMBER_OF_CARDS_IN_ONE_DECK = 52;
+    public static final int MAX_NUMBER_OF_DECKS = 8;
+    public static final int MIN_NUMBER_OF_DECKS = 1;
 
     private Stack<Card> decks;
     private int numberOfDecks;
 
     public Decks(int numberOfDecks) {
-        if (numberOfDecks < 1 || numberOfDecks > 4) {
+        if (numberOfDecks < MIN_NUMBER_OF_DECKS || numberOfDecks > MAX_NUMBER_OF_DECKS) {
             throw new IllegalArgumentException("Number of decks should be between 1 and 4 inclusively");
         }
         this.numberOfDecks = numberOfDecks;

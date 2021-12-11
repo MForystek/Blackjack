@@ -18,7 +18,7 @@ public class HardBot extends Player implements AI {
     //TODO tutaj to samo co w klasie EasyBot
     public boolean pickCard() {
         if (deck.isEmpty() || isEnded()) {
-            setIsEnded(true);
+            setEnded();
             return false;
         }
 
@@ -30,7 +30,7 @@ public class HardBot extends Player implements AI {
                 addCard(deck.takeNextCard());
                 return true;
             } else {
-                setIsEnded(true);
+                setEnded();
                 return false;
             }
         } catch (EmptyStackException e) {

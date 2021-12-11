@@ -3,11 +3,9 @@ package gameLogic.cards;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
+import static gameLogic.cards.Decks.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DecksTest {
@@ -15,7 +13,7 @@ class DecksTest {
 
     @BeforeEach
     void before() {
-        decks = new Decks(4);
+        decks = new Decks(MAX_NUMBER_OF_DECKS);
     }
 
     @Test
@@ -33,32 +31,30 @@ class DecksTest {
             }
         }
 
+        //0.75 is arbitrary threshold I assumed would be right
         assertTrue(cardsShuffled >= decks.getDecksMaxSize()*0.75);
     }
 
     @Test
     void areAllCardsPresentTest() {
-        //TODO mandatory refactor this
-        Decks tempDecks;
-        List<Card> sortedCards;
-        int maxAllowedAmountOfDecks = 4;
+        List<Card> sortedCards = new ArrayList<>();
 
-        for (int i = 1; i <= maxAllowedAmountOfDecks; i++) {
-            tempDecks = new Decks(i);
-            sortedCards = new ArrayList<>();
-            for (int j = 0; j < tempDecks.getDecksMaxSize(); j++) {
-                sortedCards.add(tempDecks.takeNextCard());
+        for (int i = MIN_NUMBER_OF_DECKS; i <= MAX_NUMBER_OF_DECKS; i++) {
+            decks = new Decks(i);
+            sortedCards.clear();
+            for (int j = 0; j < decks.getDecksMaxSize(); j++) {
+                sortedCards.add(decks.takeNextCard());
             }
             Collections.sort(sortedCards);
 
 
-            boolean areEveryCardPresent = true;
             Iterator<Card> sortedCardsIterator = sortedCards.listIterator();
+            boolean areEveryCardPresent = true;
             Card nextCard;
 
             for (CardColors cardColor : CardColors.values()) {
                 for (CardValues cardValue : CardValues.values()) {
-                    for (int j = 0; j < tempDecks.getNumberOfDecks(); j++) {
+                    for (int j = 0; j < decks.getNumberOfDecks(); j++) {
                         if (sortedCardsIterator.hasNext()) {
                             nextCard = sortedCardsIterator.next();
                             areEveryCardPresent = areEveryCardPresent && nextCard.equals(new Card(cardColor, cardValue));
@@ -68,5 +64,13 @@ class DecksTest {
             }
             assertTrue(areEveryCardPresent);
         }
+    }
+
+    @Test
+    void isThereAnyCardsLeftTest() {
+        for (int i = 0; i < NUMBER_OF_CARDS_IN_ONE_DECK * MAX_NUMBER_OF_DECKS; i++) {
+            assertDoesNotThrow(() -> decks.takeNextCard());
+        }
+        assertThrows(EmptyStackException.class, () -> decks.takeNextCard());
     }
 }

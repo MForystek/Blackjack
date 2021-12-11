@@ -18,12 +18,12 @@ public class EasyBot extends Player implements AI {
     //TODO oraz kolejną która tylko bierze kartę z i jest typu void
     public boolean pickCard() {
         if(deck.isEmpty() || isEnded()) {
-            setIsEnded(true);
+            setEnded();
             return false;
         }
 
         if (random.nextFloat() < 0.5f) {
-            setIsEnded(true);
+            setEnded();
             return false;
         } else {
             return true;
@@ -37,7 +37,7 @@ public class EasyBot extends Player implements AI {
 
         int value = 0;
         for (Card card : getCards()) {
-            value = value + card.getCardValue().getValue();
+            value = value + card.getValue();
         }
         return value;
     }
