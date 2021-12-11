@@ -120,6 +120,7 @@ public class Game {
         players.stream()
                 .filter(hasAllowedAmountOfPoints().and(hasMorePointsThanDealer()))
                 .forEach(Player::setWinner);
+        gameDurationInMilliseconds = System.currentTimeMillis() - gameDurationInMilliseconds;
     }
 
     private void makePlayersWithBlackjackWinners() {
