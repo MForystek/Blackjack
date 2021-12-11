@@ -18,7 +18,8 @@ public class GameManager extends Thread {
             game = new Game(
                     gameParameters.getDatabase(),
                     gameParameters.getNumberOfDecks(),
-                    gameParameters.getNumberOfPlayers()
+                    gameParameters.getNumberOfPlayers(),
+                    gameParameters.getGameMode()
             );
             super.start();
         }

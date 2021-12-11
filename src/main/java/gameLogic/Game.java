@@ -17,6 +17,7 @@ public class Game {
 
     private Database database;
     private long gameDurationInMilliseconds;
+    private GameModes gameMode;
 
     private Dealer dealer;
     private List<Player> players;
@@ -25,8 +26,9 @@ public class Game {
     private Decks decks;
     private boolean isEnded;
 
-    public Game(Database database, int numberOfDecks, int numberOfPlayers) {
+    public Game(Database database, int numberOfDecks, int numberOfPlayers, GameModes gameMode) {
         this.database = database;
+        this.gameMode = gameMode;
         isEnded = false;
         decks = new Decks(numberOfDecks);
         dealer = new Dealer();

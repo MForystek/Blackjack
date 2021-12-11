@@ -6,6 +6,7 @@ public class GameParameters {
     private int numberOfPlayers;
     private int numberOfDecks;
     private Database database;
+    private GameModes gameMode;
 
     public boolean isComplete() {
         return checkNumberOfPlayers() && checkNumberOfDecks() && checkDatabase();
@@ -47,4 +48,11 @@ public class GameParameters {
         this.database = database;
     }
 
+    public GameModes getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(GameModes gameMode) {
+        this.gameMode = gameMode;
+    }
 }
