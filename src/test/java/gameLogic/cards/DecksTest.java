@@ -23,9 +23,11 @@ class DecksTest {
         for (int i = 0; i < decks.getNumberOfDecks(); i++) {
             for (CardColors cardColor : CardColors.values()) {
                 for (CardValues cardValue : CardValues.values()) {
-                    Card nextCard = decks.takeNextCard();
-                    if (!nextCard.equals(new Card(cardColor, cardValue))) {
-                        cardsShuffled++;
+                    if (!cardValue.equals(CardValues.ACE1)) {
+                        Card nextCard = decks.takeNextCard();
+                        if (!nextCard.equals(new Card(cardColor, cardValue))) {
+                            cardsShuffled++;
+                        }
                     }
                 }
             }
@@ -54,10 +56,12 @@ class DecksTest {
 
             for (CardColors cardColor : CardColors.values()) {
                 for (CardValues cardValue : CardValues.values()) {
-                    for (int j = 0; j < decks.getNumberOfDecks(); j++) {
-                        if (sortedCardsIterator.hasNext()) {
-                            nextCard = sortedCardsIterator.next();
-                            areEveryCardPresent = areEveryCardPresent && nextCard.equals(new Card(cardColor, cardValue));
+                    if (!cardValue.equals(CardValues.ACE1)) {
+                        for (int j = 0; j < decks.getNumberOfDecks(); j++) {
+                            if (sortedCardsIterator.hasNext()) {
+                                nextCard = sortedCardsIterator.next();
+                                areEveryCardPresent = areEveryCardPresent && nextCard.equals(new Card(cardColor, cardValue));
+                            }
                         }
                     }
                 }

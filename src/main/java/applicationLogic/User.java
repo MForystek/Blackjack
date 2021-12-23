@@ -3,10 +3,13 @@ package applicationLogic;
 import gameLogic.players.Player;
 
 public class User {
-    //TODO Może by usunąć stąd nick i pobierać tą wartość po prostu z klasy Player?
-    private String nick;
     private String password;
     private Player player;
+
+    public User(String nick, String password){
+        this.player = new Player(nick);
+        this.password = password;
+    }
 
     public boolean changePassword(String oldPassword, String newPassword) {
         if (!password.equals(oldPassword)) {
@@ -21,11 +24,11 @@ public class User {
 
 
     public String getNick() {
-        return nick;
+        return this.player.getNick();
     }
 
     public void setNick(String nick) {
-        this.nick = nick;
+        this.player.setNick(nick);
     }
 
     public String getPassword() {

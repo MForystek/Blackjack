@@ -13,7 +13,8 @@ public enum CardValues implements Comparable<CardValues> {
     JACK(10),
     QUEEN(10),
     KING(10),
-    ACE(11);
+    ACE11(11),
+    ACE1(1);
 
     private int value;
 
@@ -23,13 +24,5 @@ public enum CardValues implements Comparable<CardValues> {
 
     public int getValue() {
         return value;
-    }
-
-    public void changeAceValue() {
-        if (this.value == 11) {
-            value = 1;
-        } else if (this.value == 1) {
-            value = 11;
-        }
     }
 }

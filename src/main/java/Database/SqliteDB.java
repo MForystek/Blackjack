@@ -219,7 +219,8 @@ public class SqliteDB implements Database {
                     this.jackNo + " = " + statistics.getCardOccurrence(CardValues.JACK) + ", " +
                     this.queenNo + " = " + statistics.getCardOccurrence(CardValues.QUEEN) + ", " +
                     this.kingNo + " = " + statistics.getCardOccurrence(CardValues.KING) + ", " +
-                    this.aceNo + " = " + statistics.getCardOccurrence(CardValues.ACE) +
+                    this.aceNo + " = " + statistics.getCardOccurrence(CardValues.ACE11) +
+                        statistics.getCardOccurrence(CardValues.ACE1) +
                     " WHERE " + this.nick + " = \"" + nick + "\";"
             );
         } catch (Exception e) {
