@@ -67,7 +67,7 @@ public class Statistics {
         cardHistory.replace(CardValues.JACK, jack);
         cardHistory.replace(CardValues.QUEEN, queen);
         cardHistory.replace(CardValues.KING, king);
-        cardHistory.replace(CardValues.ACE, ace);
+        cardHistory.replace(CardValues.ACE11, ace);
     }
 
 
