@@ -11,7 +11,7 @@ public class Player {
 
     private String nick;
     private Statistics statistics;
-    private List<Card> cards = new ArrayList<>();
+    protected List<Card> cards = new ArrayList<>();
     private boolean isWinner = false;
     private boolean isEnded = false;
 
@@ -30,18 +30,38 @@ public class Player {
     }
 
     public boolean wantToDrawCard() {
-        //TODO some way to check what player chose
         return false;
     }
 
     public boolean haveBlackjack() {
-        //TODO check if player have Blackjack
+        if (cards == null || cards.size() != 2){
+            return false;
+        }
+
+        boolean hasAce = false;
+        boolean hasTen = false;
+        for (Card card : cards) {
+            switch (card.getCardValue()){
+                case ACE11, ACE1: hasAce = true;
+                    break;
+                case KING, QUEEN, JACK: hasTen = true;
+                    break;
+            }
+            if(hasAce && hasTen) return true;
+        }
         return false;
     }
 
     public int getTotalPoints() {
-        //TODO getTotalAmountOfPoints
-        return 0;
+        if (getCards() == null) {
+            return 0;
+        }
+
+        int value = 0;
+        for (Card card : getCards()) {
+            value = value + card.getValue();
+        }
+        return value;
     }
 
 
