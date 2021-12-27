@@ -1,3 +1,9 @@
 # Blackjack  
-Projekt na przedmiot Inżynieria Oprogramowania 2021/2022  
-Autorzy kodu: Michał Forystek, Michał Kurdziel, Szymon Szymiczek
+## TODO:  
+    User i AI dziedziczą z Player  
+    Boty domyślne konstruktory z nickami
+    metoda makeTurn: pętla czy gracz chce dobrać karte  
+    hashowanie haseł  
+    
+## GUI
+    odpala się panel
