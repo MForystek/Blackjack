@@ -6,26 +6,26 @@ import java.sql.*;
 
 public class SqliteDB implements Database {
     private Connection connection = null;
-    String filName = "test.db";
-    String users = "users";
-    String nick = "nick";
-    String password = "password";
-    String winRate = "winRate";
-    String numberOfGames = "numberOfGames";
-    String gameTime = "gameTime";
-    String twoNo = "twoNo";
-    String threeNo = "threeNo";
-    String fourNo = "fourNo";
-    String fiveNo = "fiveNo";
-    String sixNo = "sixNo";
-    String sevenNo = "sevenNo";
-    String eightNo = "eightNo";
-    String nineNo = "nineNo";
-    String tenNo = "tenNo";
-    String jackNo = "jackNo";
-    String queenNo = "queenNo";
-    String kingNo = "kingNo";
-    String aceNo = "aceNo";
+    private static final String filName = "test.db";
+    private static final String users = "users";
+    private static final String nick = "nick";
+    private static final String password = "password";
+    private static final String winRate = "winRate";
+    private static final String numberOfGames = "numberOfGames";
+    private static final String gameTime = "gameTime";
+    private static final String twoNo = "twoNo";
+    private static final String threeNo = "threeNo";
+    private static final String fourNo = "fourNo";
+    private static final String fiveNo = "fiveNo";
+    private static final String sixNo = "sixNo";
+    private static final String sevenNo = "sevenNo";
+    private static final String eightNo = "eightNo";
+    private static final String nineNo = "nineNo";
+    private static final String tenNo = "tenNo";
+    private static final String jackNo = "jackNo";
+    private static final String queenNo = "queenNo";
+    private static final String kingNo = "kingNo";
+    private static final String aceNo = "aceNo";
 
 
     public SqliteDB() {
