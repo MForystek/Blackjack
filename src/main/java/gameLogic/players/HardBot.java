@@ -10,14 +10,22 @@ import java.util.List;
 
 public class HardBot extends Player implements AI {
     private static final int MAX_SCORE = 21;
-    private static final int ACE_VALUE_DROP_THRESHOLD = 18;
+    private static final int ACE_VALUE_DROP_THRESHOLD = 17;
     private int bestScore;
+    private String gameNick;
 
     private Decks deck;
 
     public HardBot(String nick, Decks deck) {
-        super(nick);
+        super("HardBot");
         this.deck = deck;
+        gameNick = nick;
+    }
+
+    public HardBot(Decks deck) {
+        super("HardBot");
+        this.deck = deck;
+        gameNick = "HardBot";
     }
 
     public boolean wantToDrawCard(){
@@ -27,7 +35,7 @@ public class HardBot extends Player implements AI {
         }
 
         if(haveBlackjack()){
-            isEnded();
+            setEnded();
             return false;
         }
 
@@ -36,6 +44,7 @@ public class HardBot extends Player implements AI {
         try {
             nextCard = deck.getNextCard();
         } catch (EmptyStackException e) {
+            setEnded();
             return false;
         }
 
@@ -83,5 +92,13 @@ public class HardBot extends Player implements AI {
             }
         }
         return false;
+    }
+
+    public String getGameNick() {
+        return gameNick;
+    }
+
+    public void setGameNick(String gameNick) {
+        this.gameNick = gameNick;
     }
 }

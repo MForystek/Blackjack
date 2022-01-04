@@ -83,6 +83,10 @@ public class Decks {
         this.decks = cards;
     }
 
+    public Stack<Card> getDecks(){
+        return this.decks;
+    }
+
     public int getNumberOfDecks() {
         return numberOfDecks;
     }

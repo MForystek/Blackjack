@@ -25,4 +25,21 @@ public enum CardValues implements Comparable<CardValues> {
     public int getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        if (this.isAce()) {
+            return "A";
+        } else {
+            return Integer.toString(value);
+        }
+    }
+
+    public boolean isAce() {
+        if (value == 11 || value == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

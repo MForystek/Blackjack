@@ -6,12 +6,17 @@ import gameLogic.cards.Decks;
 import java.util.Random;
 
 public class EasyBot extends Player implements AI {
-    private Decks deck;
     private Random random = new Random();
+    private String gameNick;
 
-    public EasyBot(String nick, Decks deck) {
-        super(nick);
-        this.deck = deck;
+    public EasyBot(String nick) {
+        super("EasyBot");
+        gameNick = nick;
+    }
+
+    public EasyBot() {
+        super("EasyBot");
+        gameNick = "EasyBot";
     }
 
     public boolean wantToDrawCard() {
@@ -24,5 +29,13 @@ public class EasyBot extends Player implements AI {
         } else {
             return true;
         }
+    }
+
+    public String getGameNick() {
+        return gameNick;
+    }
+
+    public void setGameNick(String gameNick) {
+        this.gameNick = gameNick;
     }
 }
