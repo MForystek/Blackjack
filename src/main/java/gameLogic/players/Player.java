@@ -44,7 +44,7 @@ public class Player {
             switch (card.getCardValue()){
                 case ACE11, ACE1: hasAce = true;
                     break;
-                case KING, QUEEN, JACK: hasTen = true;
+                case KING, QUEEN, JACK, TEN: hasTen = true;
                     break;
             }
             if(hasAce && hasTen) return true;
@@ -70,6 +70,10 @@ public class Player {
 
     public void setWinner() {
         isWinner = true;
+    }
+
+    public void setIsWinner(boolean status) {
+        isWinner = status;
     }
 
     public boolean isWinner() {

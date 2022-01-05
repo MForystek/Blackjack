@@ -18,15 +18,13 @@ class DealerTest {
 
     @BeforeEach
     void beforeEach() {
-        ai = new Dealer();
         deck = new Decks(1);
         deck.setDecks(generateDeck());
+        ai = new Dealer(deck.takeNextCard(),deck.takeNextCard());
     }
 
     @Test
     void wantToDrawCard() {
-        assertTrue(pickCard());
-        assertTrue(pickCard());
 
         assertTrue(pickCard());
         assertTrue(pickCard());
@@ -35,9 +33,8 @@ class DealerTest {
         assertEquals(17, ai.getTotalPoints());
 
         ai.clearGameData();
+        createDealer();
 
-        assertTrue(pickCard());
-        assertTrue(pickCard());
         assertFalse(pickCard());
         assertEquals(21, ai.getTotalPoints());
     }
@@ -55,6 +52,10 @@ class DealerTest {
         cards.add(new Card(CardColors.DIAMONDS, CardValues.TWO));
 
         return cards;
+    }
+
+    private void createDealer(){
+        ai = new Dealer(deck.takeNextCard(),deck.takeNextCard());
     }
 
     private boolean pickCard(){
