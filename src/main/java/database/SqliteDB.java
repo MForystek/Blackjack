@@ -1,4 +1,4 @@
-package Database;
+package database;
 import gameLogic.cards.CardValues;
 import applicationLogic.Statistics;
 
