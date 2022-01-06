@@ -1,6 +1,6 @@
 package gameLogic;
 
-import Database.Database;
+import database.Database;
 import gameLogic.cards.Decks;
 import gameLogic.players.Dealer;
 import gameLogic.players.Player;
@@ -12,8 +12,8 @@ import java.util.function.Predicate;
 
 import static gameLogic.players.Player.MAX_ALLOWED_POINTS_THRESHOLD;
 
-public class Game {
-    public static final int MAX_NUMBER_OF_PLAYERS = 4;
+public class Game implements Drawator {
+    private boolean isDebug = false;
 
     private Database database;
     private long gameDurationInMilliseconds;
@@ -22,24 +22,62 @@ public class Game {
     private Dealer dealer;
     private List<Player> players;
     private int indexOfCurrentPlayer;
+    private Player currentPlayer;
     private int numberOfPlayers;
+    private Runnable countdownAndAdjusterRun;
+    private Thread countdownAndAdjuster;
     private Decks decks;
+    private volatile boolean isReadyToBePlayed;
     private boolean isEnded;
 
-    public Game(Database database, int numberOfDecks, int numberOfPlayers, GameModes gameMode) {
+    public static Game createGame(Database database, int numberOfDecks, int numberOfPlayers, GameModes gameMode) {
+        if (!isComplete(database, numberOfPlayers, numberOfDecks, gameMode)) {
+            throw new IllegalArgumentException();
+        }
+        return new Game(database, numberOfDecks, numberOfPlayers, gameMode);
+    }
+
+    private static boolean isComplete(Database database, int numberOfPlayers, int numberOfDecks, GameModes gameMode) {
+        return checkDatabase(database)
+                && checkNumberOfPlayers(numberOfPlayers)
+                && checkNumberOfDecks(numberOfDecks)
+                && checkGameMode(gameMode);
+    }
+
+    private static boolean checkDatabase(Database database) {
+        return database != null;
+    }
+
+    private static boolean checkNumberOfPlayers(int numberOfPlayers) {
+        return numberOfPlayers >= 1 && numberOfPlayers <= 4;
+    }
+
+    private static boolean checkNumberOfDecks(int numberOfDecks) {
+        return numberOfDecks >= 1 && numberOfDecks <= 8;
+    }
+
+    private static boolean checkGameMode(GameModes gameMode) {
+        return gameMode != null;
+    }
+
+    private Game(Database database, int numberOfDecks, int numberOfPlayers, GameModes gameMode) {
+        isReadyToBePlayed = false;
         this.database = database;
         this.gameMode = gameMode;
         isEnded = false;
         decks = new Decks(numberOfDecks);
         dealer = new Dealer();
+
+        //order of operations matter
         initializePlayers(numberOfPlayers);
+        initializeCountdown();
+        isReadyToBePlayed = true;
     }
 
     private void initializePlayers(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
         indexOfCurrentPlayer = 0;
         players = new ArrayList<>();
-        correctNumberOfPlayers();
 
         for (int i = 0; i < numberOfPlayers; i++) {
             players.add(new Player("Player" + i));
@@ -47,10 +85,18 @@ public class Game {
         }
     }
 
-    private void correctNumberOfPlayers() {
-        if (numberOfPlayers > MAX_NUMBER_OF_PLAYERS) {
-            numberOfPlayers = MAX_NUMBER_OF_PLAYERS;
-        }
+    private void initializeCountdown() {
+        countdownAndAdjusterRun = () -> {
+            try {
+                Thread.sleep(gameMode.getTimeForMove() * 1000L);
+                adjustIndexOfTheCurrentPlayer();
+                if (isDebug) {
+                    System.out.println("Countdown stop");
+                }
+            } catch (InterruptedException e) {
+                adjustIndexOfTheCurrentPlayer();
+            }
+        };
     }
 
     public void startGame() {
@@ -66,39 +112,61 @@ public class Game {
     }
 
     public void makeTurn() {
-        if (players.stream().allMatch(Player::isEnded)) {
+        if (!players.stream().allMatch(Player::isEnded)) {
+            players.stream().distinct().forEach(player -> makePlayerTurn());
+        } else {
             makeDealerMoves();
             isEnded = true;
         }
-        players.forEach(player -> {
-            makePlayerMove();
-        });
     }
 
-    private void makePlayerMove() {
-        Player currentPlayer = players.get(indexOfCurrentPlayer);
-        if (currentPlayer.getTotalPoints() >= MAX_ALLOWED_POINTS_THRESHOLD) {
+    private void makePlayerTurn() {
+        currentPlayer = players.get(indexOfCurrentPlayer);
+
+        if (!currentPlayer.isEnded() && currentPlayer.getTotalPoints() >= MAX_ALLOWED_POINTS_THRESHOLD) {
             currentPlayer.setEnded();
         }
         if (currentPlayer.isEnded()) {
+            if (isDebug) {
+                System.out.println("Player " + currentPlayer.getNick() + " ended");
+            }
+            adjustIndexOfTheCurrentPlayer();
             return;
         }
-        //TODO wymyślić jak rozwiązać problem czy gracz chce dobrać kartę i jak to połączyć z GUI
-        if (currentPlayer.wantToDrawCard()) {
-            try {
-                currentPlayer.addCard(decks.takeNextCard());
-            } catch (EmptyStackException e) {
-                currentPlayer.setEnded();
+
+        try {
+            if (isDebug) {
+                System.out.println("Countdown start");
             }
+            countdownAndAdjuster = new Thread(countdownAndAdjusterRun);
+            countdownAndAdjuster.start();
+            countdownAndAdjuster.join();
+            if (isDebug) {
+                System.out.println("End of turn");
+            }
+        } catch (InterruptedException ignored) {}
+    }
+
+    public void draw() {
+        if (countdownAndAdjuster == null || !countdownAndAdjuster.isAlive()) {
+            return;
         }
-        adjustIndexOfTheCurrentPlayer();
+        try {
+            if (isDebug) {
+                System.out.println("Player " + currentPlayer.getNick() + " draw card");
+            }
+            currentPlayer.addCard(decks.takeNextCard());
+            countdownAndAdjuster.interrupt();
+        } catch (EmptyStackException e) {
+            currentPlayer.setEnded();
+        }
     }
 
     private void adjustIndexOfTheCurrentPlayer() {
-        if (indexOfCurrentPlayer >= numberOfPlayers) {
-            indexOfCurrentPlayer = 0;
-        } else {
+        if (indexOfCurrentPlayer < numberOfPlayers - 1) {
             indexOfCurrentPlayer++;
+        } else {
+            indexOfCurrentPlayer = 0;
         }
     }
 
@@ -151,5 +219,13 @@ public class Game {
 
     public boolean isEnded() {
         return isEnded;
+    }
+
+    public boolean isReadyToBePlayed() {
+        return isReadyToBePlayed;
+    }
+
+    public void setDebug() {
+        isDebug = !isDebug;
     }
 }
