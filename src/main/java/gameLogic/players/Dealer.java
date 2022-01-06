@@ -4,7 +4,7 @@ import gameLogic.cards.Card;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Dealer extends Player implements AI{
+public class Dealer extends Player implements AI {
     public static final int THRESHOLD_FOR_DEALER_TO_DRAW_CARDS = 16;
     private Card hiddenCard;
     private Card visibleCard;

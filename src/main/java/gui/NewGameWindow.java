@@ -1,7 +1,7 @@
 package gui;
 
-import Database.Database;
-import Database.SqliteDB;
+import database.Database;
+import database.SqliteDB;
 import gameLogic.GameConfig;
 
 import javax.swing.*;

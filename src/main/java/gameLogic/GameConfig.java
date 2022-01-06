@@ -1,7 +1,7 @@
 package gameLogic;
 
-import Database.Database;
-import Database.SqliteDB;
+import database.Database;
+import database.SqliteDB;
 import applicationLogic.Statistics;
 import applicationLogic.User;
 import gameLogic.cards.Decks;
