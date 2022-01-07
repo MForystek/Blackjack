@@ -66,7 +66,7 @@ public class Game implements Drawator {
         this.gameMode = gameMode;
         isEnded = false;
         decks = new Decks(numberOfDecks);
-        dealer = new Dealer();
+        dealer = new Dealer(decks.takeNextCard(), decks.takeNextCard());
 
         //order of operations matter
         initializePlayers(numberOfPlayers);
