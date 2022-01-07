@@ -1,5 +1,9 @@
 package gameLogic;
 
+import gameLogic.cards.Card;
+
+import java.util.Optional;
+
 public interface Drawator {
-    void draw();
+    Optional<Card> draw();
 }

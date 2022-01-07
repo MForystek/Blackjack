@@ -1,6 +1,7 @@
 package gameLogic;
 
 import database.Database;
+import gameLogic.cards.Card;
 import gameLogic.cards.Decks;
 import gameLogic.players.Dealer;
 import gameLogic.players.Player;
@@ -8,6 +9,7 @@ import gameLogic.players.Player;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static gameLogic.players.Player.MAX_ALLOWED_POINTS_THRESHOLD;
@@ -147,18 +149,21 @@ public class Game implements Drawator {
         } catch (InterruptedException ignored) {}
     }
 
-    public void draw() {
+    public Optional<Card> draw() {
         if (countdownAndAdjuster == null || !countdownAndAdjuster.isAlive()) {
-            return;
+            return Optional.empty();
         }
         try {
             if (isDebug) {
                 System.out.println("Player " + currentPlayer.getNick() + " draw card");
             }
-            currentPlayer.addCard(decks.takeNextCard());
+            Card nextCard = decks.takeNextCard();
+            currentPlayer.addCard(nextCard);
             countdownAndAdjuster.interrupt();
+            return Optional.of(nextCard);
         } catch (EmptyStackException e) {
             currentPlayer.setEnded();
+            return Optional.empty();
         }
     }
 
