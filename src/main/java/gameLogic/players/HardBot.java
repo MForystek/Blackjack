@@ -69,13 +69,8 @@ public class HardBot extends Player implements AI {
     private boolean isScoreBetter(Card nextCard){
         if (bestScore + nextCard.getCardValue().getValue() > MAX_SCORE){
             return false;
-        }
-
-        if (Math.abs(MAX_SCORE - (bestScore + nextCard.getCardValue().getValue()))
-                < Math.abs(MAX_SCORE - bestScore)){
-            return true;
         } else {
-            return false;
+            return true;
         }
     }
 

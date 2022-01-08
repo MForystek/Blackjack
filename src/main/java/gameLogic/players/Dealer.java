@@ -10,13 +10,6 @@ public class Dealer extends Player implements AI {
     private Card visibleCard;
     private boolean isEnded;
 
-    // TODO : delete constructor
-    public Dealer(){
-        super("Dealer");
-        cards = new ArrayList<>();
-        isEnded = false;
-    }
-
     public Dealer(Card visibleCard, Card hiddenCard) {
         super("Dealer");
         setVisibleCard(visibleCard);
