@@ -1,4 +1,4 @@
-package Database;
+package database;
 
 import applicationLogic.Hasher;
 import gameLogic.cards.CardValues;
