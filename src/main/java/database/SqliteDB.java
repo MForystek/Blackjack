@@ -1,12 +1,13 @@
-package database;
+package Database;
+
+import applicationLogic.Hasher;
 import gameLogic.cards.CardValues;
 import applicationLogic.Statistics;
-
 import java.sql.*;
 
 public class SqliteDB implements Database {
     private Connection connection = null;
-    private static final String filName = "test.db";
+    private static final String fileName = "test.db";
     private static final String users = "users";
     private static final String nick = "nick";
     private static final String password = "password";
@@ -41,7 +42,7 @@ public class SqliteDB implements Database {
 
     public void openConnection() {
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:" + filName);
+            connection = DriverManager.getConnection("jdbc:sqlite:" + fileName);
             System.out.println("Connected to DB");
         } catch (Exception e) {
             System.out.println("Error connecting to DB: " + e.getMessage());
@@ -113,17 +114,24 @@ public class SqliteDB implements Database {
         return false;
     }
 
-    public void putNewUser(String nick, String password) throws SQLException {
+    public void register(String nick, String password) throws SQLException {
         if (!isNickAvailable(nick)) {
             throw new SQLException("Error: user with this nick already exists");
         }
 
         try (Statement statement = connection.createStatement()) {
             statement.execute("INSERT INTO users ('nick', 'password') " +
-                    "VALUES('" + nick + "', '" + password + "');");
+                    "VALUES('" + nick + "', '" + Hasher.hashPassword(password) + "');");
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
+    }
+
+    public boolean login(String nick, String password) throws SQLException {
+        if (isNickAvailable(nick)) {
+            throw new SQLException("Error: no such user");
+        }
+        return Hasher.hashPassword(password).equals(getPassword(nick));
     }
 
     public void deleteUser(String nick) throws SQLException{
