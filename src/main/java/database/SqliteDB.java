@@ -1,8 +1,8 @@
 package Database;
+
 import applicationLogic.Hasher;
 import gameLogic.cards.CardValues;
 import applicationLogic.Statistics;
-
 import java.sql.*;
 
 public class SqliteDB implements Database {
@@ -181,7 +181,7 @@ public class SqliteDB implements Database {
             throw new SQLException("No such user");
         }
         try (Statement statement = this.connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + this.users);
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + this.users + " WHERE nick = '" + nick + "';");
             statistics.setWinRate(resultSet.getFloat(this.winRate));
             statistics.setNumberOfGames(resultSet.getInt(this.numberOfGames));
             statistics.setGameTime(resultSet.getInt(this.gameTime));
@@ -227,7 +227,8 @@ public class SqliteDB implements Database {
                     this.jackNo + " = " + statistics.getCardOccurrence(CardValues.JACK) + ", " +
                     this.queenNo + " = " + statistics.getCardOccurrence(CardValues.QUEEN) + ", " +
                     this.kingNo + " = " + statistics.getCardOccurrence(CardValues.KING) + ", " +
-                    this.aceNo + " = " + statistics.getCardOccurrence(CardValues.ACE) +
+                    this.aceNo + " = " + (statistics.getCardOccurrence(CardValues.ACE11) +
+                        statistics.getCardOccurrence(CardValues.ACE1)) +
                     " WHERE " + this.nick + " = \"" + nick + "\";"
             );
         } catch (Exception e) {

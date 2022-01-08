@@ -1,25 +1,17 @@
 package gameLogic;
 
+import database.Database;
+
 public class GameManager extends Thread {
     private Game game;
-    private GameParameters gameParameters;
 
-    public GameManager() {
-        gameParameters = new GameParameters();
-    }
-
-    public boolean isReadyToBePlayed() {
-        return gameParameters.isComplete();
+    public GameManager(Database database, int numberOfPlayers, int numberOfDecks, GameModes gameMode) {
+        game = Game.createGame(database, numberOfPlayers, numberOfDecks, gameMode);
     }
 
     @Override
     public synchronized void start() {
-        if (isReadyToBePlayed()) {
-            game = new Game(
-                    gameParameters.getDatabase(),
-                    gameParameters.getNumberOfDecks(),
-                    gameParameters.getNumberOfPlayers()
-            );
+        if (game.isReadyToBePlayed()) {
             super.start();
         }
     }
@@ -27,13 +19,17 @@ public class GameManager extends Thread {
     @Override
     public void run() {
         game.startGame();
-        while(game.isEnded()) {
+        while(!game.isEnded()) {
             game.makeTurn();
         }
         game.setWinners();
     }
 
-    public GameParameters getGameParameters() {
-        return gameParameters;
+    public Drawator getDrawator() {
+        return game;
+    }
+
+    protected void setDebug() {
+        game.setDebug();
     }
 }

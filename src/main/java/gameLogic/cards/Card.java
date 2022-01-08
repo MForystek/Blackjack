@@ -9,6 +9,14 @@ public class Card implements Comparable<Card> {
         this.cardColor = cardColor;
     }
 
+    public void changeAceValue(){
+        if (cardValue.equals(CardValues.ACE11)) {
+            cardValue = CardValues.ACE1;
+        } else if (cardValue.equals(CardValues.ACE1)) {
+            cardValue = CardValues.ACE11;
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Card c)) {

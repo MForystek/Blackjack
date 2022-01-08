@@ -42,8 +42,8 @@ public class StatisticsTest {
         assertEquals(150, statistics.getGameTime());
         assertEquals(1, statistics.getCardOccurrence(eight));
         assertEquals(2, statistics.getCardOccurrence(king));
-        assertEquals(0, statistics.getCardHistory().get(CardValues.ACE));
-        assertEquals(0, statistics.getCardOccurrence(new Card(CardColors.DIAMONDS, CardValues.ACE)));
+        assertEquals(0, statistics.getCardHistory().get(CardValues.ACE11));
+        assertEquals(0, statistics.getCardOccurrence(new Card(CardColors.DIAMONDS, CardValues.ACE11)));
     }
 
     @Test
@@ -52,6 +52,6 @@ public class StatisticsTest {
                                 7, 8, 9, 10, 11, 12);
         assertEquals(0, statistics.getCardHistory().get(CardValues.TWO));
         assertEquals(1, statistics.getCardHistory().get(CardValues.THREE));
-        assertEquals(12, statistics.getCardOccurrence(CardValues.ACE));
+        assertEquals(12, statistics.getCardOccurrence(CardValues.ACE11));
     }
 }

@@ -3,3 +3,4 @@ Blackjack.iml
 target
 *.db
 src/main/resources/SkinDeck.png
+src/test/java/H_others

@@ -1,61 +1,105 @@
 package gameLogic.players;
 
-import static gameLogic.players.Player.MAX_ALLOWED_POINTS_THRESHOLD;
-
 import gameLogic.cards.Card;
-
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO prawdopodobnie dałoby się powiązać Dealera i Playera poprzez jakąś wspólną klasę rodzic bo mają dużo wspólnego
-public class Dealer {
-    public static final int THRESHOLD_FOR_DEALER_TO_DRAW_CARDS = 17;
-
-    private List<Card> cards;
+public class Dealer extends Player implements AI {
+    public static final int THRESHOLD_FOR_DEALER_TO_DRAW_CARDS = 16;
     private Card hiddenCard;
+    private Card visibleCard;
     private boolean isEnded;
 
-    public Dealer() {
+    // TODO : delete constructor
+    public Dealer(){
+        super("Dealer");
         cards = new ArrayList<>();
         isEnded = false;
     }
 
-    public void setHiddenCard(Card card) {
-        hiddenCard = card;
-    }
-
-    public void addCard(Card card) {
-        cards.add(card);
-    }
-
-    public void clearGameData() {
-        hiddenCard = null;
-        cards.clear();
+    public Dealer(Card visibleCard, Card hiddenCard) {
+        super("Dealer");
+        setVisibleCard(visibleCard);
+        setHiddenCard(hiddenCard);
     }
 
     public boolean wantToDrawCard() {
-        return haveBlackjack() || getTotalPoints() >= THRESHOLD_FOR_DEALER_TO_DRAW_CARDS;
-    }
-
-    public boolean haveBlackjack() {
-        //TODO the same as for Player
-        return false;
-    }
-
-    public int getTotalPoints() {
-        //TODO the same as for Player
-        return 0;
+        if (haveBlackjack() || !canDrawCard()) {
+            setEnded();
+            return false;
+        }
+        return true;
     }
 
     public boolean haveToManyPoints() {
         return getTotalPoints() > MAX_ALLOWED_POINTS_THRESHOLD;
     }
 
-    public boolean isEnded() {
-        return isEnded;
+    private boolean canDrawCard () {
+        int score = getTotalPoints();
+        return score <= MAX_ALLOWED_POINTS_THRESHOLD &&
+                score <= THRESHOLD_FOR_DEALER_TO_DRAW_CARDS && !isEnded;
     }
 
-    public void setEnded() {
-        isEnded = true;
+    @Override
+    public int getTotalPoints() {
+        if (getCards() == null) {
+            return 0;
+        }
+
+        int value = 0;
+        for (Card card : getCards()) {
+            value = value + card.getValue();
+        }
+        return value + hiddenCard.getValue() + visibleCard.getValue();
+    }
+
+    @Override
+    public void clearGameData() {
+        isEnded = false;
+        setIsWinner(false);
+        cards.clear();
+        hiddenCard = null;
+        visibleCard = null;
+    }
+
+    @Override
+    public boolean haveBlackjack() {
+        if (visibleCard == null || hiddenCard == null){
+            return false;
+        }
+
+        boolean hasAce = false;
+        boolean hasTen = false;
+        for (Card card : new Card[] {hiddenCard, visibleCard}) {
+            switch (card.getCardValue()){
+                case ACE11, ACE1: hasAce = true;
+                    break;
+                case KING, QUEEN, JACK, TEN: hasTen = true;
+                    break;
+            }
+            if(hasAce && hasTen) return true;
+        }
+        return false;
+    }
+
+    public void setHiddenCard(Card card) {
+        hiddenCard = card;
+    }
+
+    public void setVisibleCard(Card card) {
+        visibleCard = card;
+    }
+
+    public Card getHiddenCard() {
+        return hiddenCard;
+    }
+
+    public Card getVisibleCard() {
+        return visibleCard;
+    }
+
+    public String getGameNick() {
+        return this.getNick();
     }
 }

@@ -25,7 +25,9 @@ public class Decks {
         for (int i = 0; i < numberOfDecks; i++) {
             for (CardColors cardColor : CardColors.values()) {
                 for (CardValues cardValue : CardValues.values()) {
-                    decks.push(new Card(cardColor, cardValue));
+                    if (!cardValue.equals(CardValues.ACE1)) {
+                        decks.push(new Card(cardColor, cardValue));
+                    }
                 }
             }
         }
@@ -79,6 +81,10 @@ public class Decks {
 
     public void setDecks(Stack<Card> cards){
         this.decks = cards;
+    }
+
+    public Stack<Card> getDecks(){
+        return this.decks;
     }
 
     public int getNumberOfDecks() {

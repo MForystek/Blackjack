@@ -6,22 +6,23 @@ import gameLogic.cards.Decks;
 import java.util.Random;
 
 public class EasyBot extends Player implements AI {
-    private Decks deck;
     private Random random = new Random();
+    private String gameNick;
 
-    public EasyBot(String nick, Decks deck) {
-        super(nick);
-        this.deck = deck;
+    public EasyBot(String nick) {
+        super("EasyBot");
+        gameNick = nick;
     }
 
-    //TODO Możnaby to rozbić na funkcję sprawdzającą czy skończył grę lub czy deck jest pusty
-    //TODO oraz kolejną która tylko bierze kartę z i jest typu void
-    public boolean pickCard() {
-        if(deck.isEmpty() || isEnded()) {
-            setEnded();
+    public EasyBot() {
+        super("EasyBot");
+        gameNick = "EasyBot";
+    }
+
+    public boolean wantToDrawCard() {
+        if (isEnded()) {
             return false;
         }
-
         if (random.nextFloat() < 0.5f) {
             setEnded();
             return false;
@@ -30,15 +31,11 @@ public class EasyBot extends Player implements AI {
         }
     }
 
-    public int getCardsValue() {
-        if(getCards() == null) {
-            return 0;
-        }
+    public String getGameNick() {
+        return gameNick;
+    }
 
-        int value = 0;
-        for (Card card : getCards()) {
-            value = value + card.getValue();
-        }
-        return value;
+    public void setGameNick(String gameNick) {
+        this.gameNick = gameNick;
     }
 }
