@@ -1,0 +1,6 @@
+add images to this directory with proper names
+
+card image name structure: XY.EXTENSION
+- X is one of CardColors symbols: ['H', 'D', 'C', 'S'] // H -> Hearts, S -> Spade etc...
+- Y is one of CardValues symbols: ['2', '3', '4', ... , '10', 'J', 'Q', 'K', 'A' ]
+- EXTENSION: default is 'jpg', can be changed by CardDisplayer.setExtension()
