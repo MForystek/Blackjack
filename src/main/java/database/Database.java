@@ -3,6 +3,7 @@ package database;
 import applicationLogic.Statistics;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public interface Database {
     void buildDB();
@@ -11,6 +12,7 @@ public interface Database {
     void register(String nick, String password) throws SQLException;
     boolean login(String nick, String password) throws SQLException;
     void deleteUser(String nick) throws SQLException;
+    ArrayList<String> getNicks();
     String getPassword(String nick) throws SQLException;
     Statistics getStatistics(String nick) throws SQLException;
     void setStatistics(String nick, Statistics statistics) throws SQLException;

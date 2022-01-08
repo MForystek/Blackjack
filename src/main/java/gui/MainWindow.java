@@ -33,6 +33,13 @@ public class MainWindow extends JFrame{
                 dispose();
             }
         });
+        statisticsLabel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                new StatisticsWindow(database);
+                dispose();
+            }
+        });
+
 
         exitLabel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -44,7 +51,6 @@ public class MainWindow extends JFrame{
 
     public void initDatabase() {
         database = new SqliteDB();
-        database.openConnection();
     }
 
     public static void main(String [] args) {
