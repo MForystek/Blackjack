@@ -4,6 +4,7 @@ import applicationLogic.Hasher;
 import gameLogic.cards.CardValues;
 import applicationLogic.Statistics;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class SqliteDB implements Database {
     private Connection connection = null;
@@ -34,6 +35,7 @@ public class SqliteDB implements Database {
             Class.forName("org.sqlite.JDBC");
             openConnection();
             buildDB();
+            fillForTests();
             closeConnection();
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -99,6 +101,27 @@ public class SqliteDB implements Database {
                 statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
                         "VALUES('szymon', 'hasło', '50', '12', '4', '29', '39', '49', '59', '99', '79', '89', '99', '109', '119', '129', '139', '159');");
             }
+            if (isNickAvailable("asdf")) {
+                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
+                        "VALUES('asdf', 'hasło', '50', '12', '4', '29', '39', '49', '59', '99', '79', '89', '99', '109', '119', '129', '139', '159');");
+            }
+            if (isNickAvailable("zodiakara")) {
+                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
+                        "VALUES('zodiakara', 'hasło', '50', '12', '4', '29', '39', '49', '59', '99', '79', '89', '99', '109', '119', '129', '139', '159');");
+            }
+            if (isNickAvailable("frajer1")) {
+                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
+                        "VALUES('frajer1', 'hasło', '50', '12', '4', '29', '39', '49', '59', '99', '79', '89', '99', '109', '119', '129', '139', '159');");
+            }
+            if (isNickAvailable("helikopter")) {
+                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
+                        "VALUES('helikopter', 'hasło', '50', '12', '4', '29', '39', '49', '59', '99', '79', '89', '99', '109', '119', '129', '139', '159');");
+            }
+            if (isNickAvailable("gimbus")) {
+                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
+                        "VALUES('gimbus', 'hasło', '50', '12', '4', '29', '39', '49', '59', '99', '79', '89', '99', '109', '119', '129', '139', '159');");
+            }
+
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -148,18 +171,31 @@ public class SqliteDB implements Database {
 
     public void printUsers() {
         try (Statement statement = connection.createStatement()){
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM users");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + users);
 
             while(resultSet.next()) {
-                int id = resultSet.getInt("id");
                 String nick = resultSet.getString("nick");
-                String password = resultSet.getString("password");
+                Statistics statistics = getStatistics(nick);
 
-                System.out.println(id + nick + password);
+                System.out.println(nick);
             }
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
+    }
+
+    public ArrayList<String> getNicks() {
+        ArrayList<String> list = new ArrayList<>();
+        try (Statement statement = connection.createStatement()){
+            ResultSet resultSet = statement.executeQuery("SELECT " + nick + " FROM " + users + " ORDER BY " + winRate + " DESC");
+
+            while(resultSet.next()) {
+                list.add(resultSet.getString(nick));
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return list;
     }
 
     public String getPassword(String nick) throws SQLException {
@@ -167,7 +203,7 @@ public class SqliteDB implements Database {
             throw new SQLException("No such user");
         }
         try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM users");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + users + " WHERE " + this.nick + " = " + nick);
             return resultSet.getString("password");
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -181,7 +217,7 @@ public class SqliteDB implements Database {
             throw new SQLException("No such user");
         }
         try (Statement statement = this.connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + this.users + " WHERE nick = '" + nick + "';");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + users + " WHERE nick = '" + nick + "';");
             statistics.setWinRate(resultSet.getFloat(this.winRate));
             statistics.setNumberOfGames(resultSet.getInt(this.numberOfGames));
             statistics.setGameTime(resultSet.getInt(this.gameTime));
