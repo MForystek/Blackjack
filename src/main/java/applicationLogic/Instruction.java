@@ -32,7 +32,7 @@ public class Instruction {
             
             """;
 
-    public String getInstruction() {
+    public static String getInstruction() {
         return instruction;
     }
 }
