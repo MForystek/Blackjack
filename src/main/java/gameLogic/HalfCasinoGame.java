@@ -215,7 +215,7 @@ public class HalfCasinoGame implements Game, TurnChoice {
         setWinners();
         for (Player player : players) {
             Statistics tmp = player.getStatistics();
-            tmp.updateStatistics(player.isWinner(), player.getCards(), gameDurationInMilliseconds);
+            tmp.updateStatistics(player.isWinner(), player.getCards(), gameDurationInMilliseconds/1000);
             try {
                 database.setStatistics(player.getNick(), tmp);
             } catch (SQLException e){
