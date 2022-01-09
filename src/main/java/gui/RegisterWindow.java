@@ -82,8 +82,7 @@ public class RegisterWindow extends JFrame{
             JOptionPane.showMessageDialog(mainPanel, "Successfully registered");
             dispose();
         } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(mainPanel, "This nick is taken");
+            JOptionPane.showMessageDialog(mainPanel, e.getMessage());
         }
     }
 

@@ -47,34 +47,7 @@ public class SqliteDB implements Database {
             connection = DriverManager.getConnection("jdbc:sqlite:" + fileName);
             System.out.println("Connected to DB");
         } catch (Exception e) {
-            System.out.println("Error connecting to DB: " + e.getMessage());
-        }
-    }
-
-    public void buildDB() {
-        try (Statement statement = connection.createStatement()){
-            statement.execute("CREATE TABLE IF NOT EXISTS " + this.users + " (\n" +
-                    "\t" + this.nick + "\tTEXT NOT NULL UNIQUE,\n" +
-                    "\t" + this.password + "\tTEXT NOT NULL,\n" +
-                    "\t" + this.winRate + "\tNUMERIC,\n" +
-                    "\t" + this.numberOfGames + "\tINTEGER DEFAULT 0,\n" +
-                    "\t" + this.gameTime + "\tINTEGER DEFAULT 0,\n" +
-                    "\t" + this.twoNo + "\tINTEGER DEFAULT 0,\n" +
-                    "\t" + this.threeNo + "\tINTEGER DEFAULT 0,\n" +
-                    "\t" + this.fourNo + "\tINTEGER DEFAULT 0,\n" +
-                    "\t" + this.fiveNo + "\tINTEGER DEFAULT 0,\n" +
-                    "\t" + this.sixNo + "\tINTEGER DEFAULT 0,\n" +
-                    "\t" + this.sevenNo + "\tINTEGER DEFAULT 0,\n" +
-                    "\t" + this.eightNo + "\tINTEGER DEFAULT 0,\n" +
-                    "\t" + this.nineNo + "\tINTEGER DEFAULT 0,\n" +
-                    "\t" + this.tenNo + "\tINTEGER DEFAULT 0,\n" +
-                    "\t" + this.jackNo + "\tINTEGER DEFAULT 0,\n" +
-                    "\t" + this.queenNo + "\tINTEGER DEFAULT 0,\n" +
-                    "\t" + this.kingNo + "\tINTEGER DEFAULT 0,\n" +
-                    "\t" + this.aceNo + "\tINTEGER DEFAULT 0\n" +
-                    ")");
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -83,43 +56,83 @@ public class SqliteDB implements Database {
             connection.close();
             System.out.println("Connection to DB closed");
         } catch (Exception e) {
-            System.out.println("Error closing connection to DB: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    public void fillForTests() {
-        try (Statement statement = connection.createStatement()) {
+    public void buildDB() {
+        try (Statement statement = connection.createStatement()){
+            statement.execute("CREATE TABLE IF NOT EXISTS " + SqliteDB.users + " (\n" +
+                    "\t" + SqliteDB.nick + "\tTEXT NOT NULL UNIQUE,\n" +
+                    "\t" + SqliteDB.password + "\tTEXT NOT NULL,\n" +
+                    "\t" + SqliteDB.winRate + "\tNUMERIC,\n" +
+                    "\t" + SqliteDB.numberOfGames + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + SqliteDB.gameTime + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + SqliteDB.twoNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + SqliteDB.threeNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + SqliteDB.fourNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + SqliteDB.fiveNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + SqliteDB.sixNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + SqliteDB.sevenNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + SqliteDB.eightNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + SqliteDB.nineNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + SqliteDB.tenNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + SqliteDB.jackNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + SqliteDB.queenNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + SqliteDB.kingNo + "\tINTEGER DEFAULT 0,\n" +
+                    "\t" + SqliteDB.aceNo + "\tINTEGER DEFAULT 0\n" +
+                    ")");
+            makeBots();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public void fillForTests() throws SQLException {
+            Statistics tmp = new Statistics();
+
             if (isNickAvailable("jack")) {
-                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
-                        "VALUES('jack', 'mandera', '99.99', '10000', '9090', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '15');");
+                register("jack", "frost");
+                tmp.setCardHistory(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
+                tmp.setGameTime(1234);
+                tmp.setWinRate(99.99f);
+                tmp.setNumberOfGames(465);
+                setStatistics("jack", tmp);
             }
-            if (isNickAvailable("ironMan")) {
-                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
-                        "VALUES('ironMan', 'iamironman', '100', '10000', '9090', '7898', '78', '3', '345', '5', '0', '56', '6', '12', '7', '187', '634', '1486');");
+
+            if (isNickAvailable("tony")) {
+                register("tony", "stark");
+                tmp.setCardHistory(10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
+                tmp.setGameTime(9999);
+                tmp.setWinRate(100f);
+                tmp.setNumberOfGames(42);
+                setStatistics("tony", tmp);
             }
-            if (isNickAvailable("szymon")) {
-                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
-                        "VALUES('szymon', 'hasło', '50', '12', '4', '29', '39', '49', '59', '99', '79', '89', '99', '109', '119', '129', '139', '159');");
+
+            if (isNickAvailable("pope")) {
+                register("pope", "jp2");
+                tmp.setCardHistory(2, 22, 222, 2222, 22222, 2, 22, 2222, 222, 2, 22, 22, 2);
+                tmp.setGameTime(2137);
+                tmp.setWinRate(21.37f);
+                tmp.setNumberOfGames(7312);
+                setStatistics("pope", tmp);
             }
-            if (isNickAvailable("asdf")) {
-                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
-                        "VALUES('asdf', 'hasło', '50', '12', '4', '29', '39', '49', '59', '99', '79', '89', '99', '109', '119', '129', '139', '159');");
+    }
+
+    public void makeBots() {
+        try (Statement statement = connection.createStatement()) {
+
+            if (isNickAvailable("Dealer")) {
+                statement.execute("INSERT INTO " + SqliteDB.users + " ('" + SqliteDB.nick + "', '" + SqliteDB.password + "') VALUES('Dealer', 'bot');");
             }
-            if (isNickAvailable("zodiakara")) {
-                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
-                        "VALUES('zodiakara', 'hasło', '50', '12', '4', '29', '39', '49', '59', '99', '79', '89', '99', '109', '119', '129', '139', '159');");
+            if (isNickAvailable("EasyBot")) {
+                statement.execute("INSERT INTO " + SqliteDB.users + " ('" + SqliteDB.nick + "', '" + SqliteDB.password + "') VALUES('EasyBot', 'bot');");
             }
-            if (isNickAvailable("frajer1")) {
-                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
-                        "VALUES('frajer1', 'hasło', '50', '12', '4', '29', '39', '49', '59', '99', '79', '89', '99', '109', '119', '129', '139', '159');");
+            if (isNickAvailable("MediumBot")) {
+                statement.execute("INSERT INTO " + SqliteDB.users + " ('" + SqliteDB.nick + "', '" + SqliteDB.password + "') VALUES('MediumBot', 'bot');");
             }
-            if (isNickAvailable("helikopter")) {
-                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
-                        "VALUES('helikopter', 'hasło', '50', '12', '4', '29', '39', '49', '59', '99', '79', '89', '99', '109', '119', '129', '139', '159');");
-            }
-            if (isNickAvailable("gimbus")) {
-                statement.execute("INSERT INTO users ('nick', 'password', 'winRate', 'numberOfGames', 'gameTime', 'twoNo', 'threeNo', 'fourNo', 'fiveNo', 'sixNo', 'sevenNo', 'eightNo', 'nineNo', 'tenNo', 'jackNo', 'queenNo', 'kingNo', 'aceNo') " +
-                        "VALUES('gimbus', 'hasło', '50', '12', '4', '29', '39', '49', '59', '99', '79', '89', '99', '109', '119', '129', '139', '159');");
+            if (isNickAvailable("HardBot")) {
+                statement.execute("INSERT INTO " + SqliteDB.users + " ('" + SqliteDB.nick + "', '" + SqliteDB.password + "') VALUES('HardBot', 'bot');");
             }
 
         } catch (Exception e) {
@@ -129,7 +142,7 @@ public class SqliteDB implements Database {
 
     private boolean isNickAvailable(String nick) {
         try (Statement statement = connection.createStatement()){
-            ResultSet resultSet = statement.executeQuery("SELECT nick FROM users WHERE nick = '" + nick + "'");
+            ResultSet resultSet = statement.executeQuery("SELECT " + SqliteDB.nick + " FROM " + SqliteDB.users + " WHERE " + SqliteDB.nick + " = '" + nick + "'");
             return !resultSet.next();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -139,11 +152,11 @@ public class SqliteDB implements Database {
 
     public void register(String nick, String password) throws SQLException {
         if (!isNickAvailable(nick)) {
-            throw new SQLException("Error: user with this nick already exists");
+            throw new SQLException("Error: user with nick " + nick + " already exists");
         }
 
         try (Statement statement = connection.createStatement()) {
-            statement.execute("INSERT INTO users ('nick', 'password') " +
+            statement.execute("INSERT INTO " + SqliteDB.users + "('nick', 'password') " +
                     "VALUES('" + nick + "', '" + Hasher.hashPassword(password) + "');");
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -152,7 +165,7 @@ public class SqliteDB implements Database {
 
     public boolean login(String nick, String password) throws SQLException {
         if (isNickAvailable(nick)) {
-            throw new SQLException("Error: no such user");
+            throw new SQLException("No such user: " + nick);
         }
         return Hasher.hashPassword(password).equals(getPassword(nick));
     }
@@ -160,31 +173,16 @@ public class SqliteDB implements Database {
     public void deleteUser(String nick) throws SQLException{
         if (!isNickAvailable(nick)) {
             try (Statement statement = connection.createStatement()) {
-                statement.execute("DELETE FROM users WHERE nick = '" + nick + "';");
+                statement.execute("DELETE FROM " + SqliteDB.users + " WHERE " + SqliteDB.nick + " = '" + nick + "';");
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
             }
         } else {
-            throw new SQLException("No such user");
+            throw new SQLException("No such user: " + nick);
         }
     }
 
-    public void printUsers() {
-        try (Statement statement = connection.createStatement()){
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + users);
-
-            while(resultSet.next()) {
-                String nick = resultSet.getString("nick");
-                Statistics statistics = getStatistics(nick);
-
-                System.out.println(nick);
-            }
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-    }
-
-    public ArrayList<String> getNicks() {
+    public ArrayList<String> getAllNicks() {
         ArrayList<String> list = new ArrayList<>();
         try (Statement statement = connection.createStatement()){
             ResultSet resultSet = statement.executeQuery("SELECT " + nick + " FROM " + users + " ORDER BY " + winRate + " DESC");
@@ -200,41 +198,52 @@ public class SqliteDB implements Database {
 
     public String getPassword(String nick) throws SQLException {
         if (isNickAvailable(nick)) {
-            throw new SQLException("No such user");
+            throw new SQLException("No such user: " + nick);
         }
         try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + users + " WHERE " + this.nick + " = " + nick);
-            return resultSet.getString("password");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + SqliteDB.users + " WHERE " + SqliteDB.nick + " = '" + nick + "'");
+            return resultSet.getString(password);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return null;
     }
 
+    public void changePassword(String nick, String password) throws SQLException {
+        if (isNickAvailable(nick)) {
+            throw new SQLException("No such user: " + nick);
+        }
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("UPDATE " + SqliteDB.users + " SET " + SqliteDB.password + " = '" + password + "' WHERE " + SqliteDB.nick + " = '" + nick + "'");
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
     public Statistics getStatistics(String nick) throws SQLException {
         Statistics statistics = new Statistics();
         if (isNickAvailable(nick)) {
-            throw new SQLException("No such user");
+            throw new SQLException("No such user: " + nick);
         }
         try (Statement statement = this.connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + users + " WHERE nick = '" + nick + "';");
-            statistics.setWinRate(resultSet.getFloat(this.winRate));
-            statistics.setNumberOfGames(resultSet.getInt(this.numberOfGames));
-            statistics.setGameTime(resultSet.getInt(this.gameTime));
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " +  SqliteDB.users + " WHERE " +  SqliteDB.nick + " = '" + nick + "';");
+            statistics.setWinRate(resultSet.getFloat( SqliteDB.winRate));
+            statistics.setNumberOfGames(resultSet.getInt( SqliteDB.numberOfGames));
+            statistics.setGameTime(resultSet.getInt( SqliteDB.gameTime));
             statistics.setCardHistory(
-                    resultSet.getInt(this.twoNo),
-                    resultSet.getInt(this.threeNo),
-                    resultSet.getInt(this.fourNo),
-                    resultSet.getInt(this.fiveNo),
-                    resultSet.getInt(this.sixNo),
-                    resultSet.getInt(this.sevenNo),
-                    resultSet.getInt(this.eightNo),
-                    resultSet.getInt(this.nineNo),
-                    resultSet.getInt(this.tenNo),
-                    resultSet.getInt(this.jackNo),
-                    resultSet.getInt(this.queenNo),
-                    resultSet.getInt(this.kingNo),
-                    resultSet.getInt(this.aceNo));
+                    resultSet.getInt( SqliteDB.twoNo),
+                    resultSet.getInt( SqliteDB.threeNo),
+                    resultSet.getInt( SqliteDB.fourNo),
+                    resultSet.getInt( SqliteDB.fiveNo),
+                    resultSet.getInt( SqliteDB.sixNo),
+                    resultSet.getInt( SqliteDB.sevenNo),
+                    resultSet.getInt( SqliteDB.eightNo),
+                    resultSet.getInt( SqliteDB.nineNo),
+                    resultSet.getInt( SqliteDB.tenNo),
+                    resultSet.getInt( SqliteDB.jackNo),
+                    resultSet.getInt( SqliteDB.queenNo),
+                    resultSet.getInt( SqliteDB.kingNo),
+                    resultSet.getInt( SqliteDB.aceNo));
             return statistics;
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -244,28 +253,28 @@ public class SqliteDB implements Database {
 
     public void setStatistics(String nick, Statistics statistics) throws SQLException {
         if (isNickAvailable(nick)) {
-            throw new SQLException("No such user");
+            throw new SQLException("No such user: " + nick);
         }
         try (Statement statement = connection.createStatement()) {
-            statement.execute("UPDATE " + this.users + " SET " +
-                    this.winRate + " = " + statistics.getWinRate() + ", " +
-                    this.numberOfGames + " = " + statistics.getNumberOfGames() + ", " +
-                    this.gameTime + " = " + statistics.getGameTime() + ", " +
-                    this.twoNo + " = " + statistics.getCardOccurrence(CardValues.TWO) + ", " +
-                    this.threeNo + " = " + statistics.getCardOccurrence(CardValues.THREE) + ", " +
-                    this.fourNo + " = " + statistics.getCardOccurrence(CardValues.FOUR) + ", " +
-                    this.fiveNo + " = " + statistics.getCardOccurrence(CardValues.FIVE) + ", " +
-                    this.sixNo + " = " + statistics.getCardOccurrence(CardValues.SIX) + ", " +
-                    this.sevenNo + " = " + statistics.getCardOccurrence(CardValues.SEVEN) + ", " +
-                    this.eightNo + " = " + statistics.getCardOccurrence(CardValues.EIGHT) + ", " +
-                    this.nineNo + " = " + statistics.getCardOccurrence(CardValues.NINE) + ", " +
-                    this.tenNo + " = " + statistics.getCardOccurrence(CardValues.TEN) + ", " +
-                    this.jackNo + " = " + statistics.getCardOccurrence(CardValues.JACK) + ", " +
-                    this.queenNo + " = " + statistics.getCardOccurrence(CardValues.QUEEN) + ", " +
-                    this.kingNo + " = " + statistics.getCardOccurrence(CardValues.KING) + ", " +
-                    this.aceNo + " = " + (statistics.getCardOccurrence(CardValues.ACE11) +
+            statement.execute("UPDATE " + SqliteDB.users + " SET " +
+                    SqliteDB.winRate + " = " + statistics.getWinRate() + ", " +
+                    SqliteDB.numberOfGames + " = " + statistics.getNumberOfGames() + ", " +
+                    SqliteDB.gameTime + " = " + statistics.getGameTime() + ", " +
+                    SqliteDB.twoNo + " = " + statistics.getCardOccurrence(CardValues.TWO) + ", " +
+                    SqliteDB.threeNo + " = " + statistics.getCardOccurrence(CardValues.THREE) + ", " +
+                    SqliteDB.fourNo + " = " + statistics.getCardOccurrence(CardValues.FOUR) + ", " +
+                    SqliteDB.fiveNo + " = " + statistics.getCardOccurrence(CardValues.FIVE) + ", " +
+                    SqliteDB.sixNo + " = " + statistics.getCardOccurrence(CardValues.SIX) + ", " +
+                    SqliteDB.sevenNo + " = " + statistics.getCardOccurrence(CardValues.SEVEN) + ", " +
+                    SqliteDB.eightNo + " = " + statistics.getCardOccurrence(CardValues.EIGHT) + ", " +
+                    SqliteDB.nineNo + " = " + statistics.getCardOccurrence(CardValues.NINE) + ", " +
+                    SqliteDB.tenNo + " = " + statistics.getCardOccurrence(CardValues.TEN) + ", " +
+                    SqliteDB.jackNo + " = " + statistics.getCardOccurrence(CardValues.JACK) + ", " +
+                    SqliteDB.queenNo + " = " + statistics.getCardOccurrence(CardValues.QUEEN) + ", " +
+                    SqliteDB.kingNo + " = " + statistics.getCardOccurrence(CardValues.KING) + ", " +
+                    SqliteDB.aceNo + " = " + (statistics.getCardOccurrence(CardValues.ACE11) +
                         statistics.getCardOccurrence(CardValues.ACE1)) +
-                    " WHERE " + this.nick + " = \"" + nick + "\";"
+                    " WHERE " + SqliteDB.nick + " = \"" + nick + "\";"
             );
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
