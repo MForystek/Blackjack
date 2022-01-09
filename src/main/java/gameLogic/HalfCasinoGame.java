@@ -1,11 +1,13 @@
 package gameLogic;
 
+import applicationLogic.Statistics;
 import database.Database;
 import gameLogic.cards.Card;
 import gameLogic.cards.Decks;
 import gameLogic.players.Dealer;
 import gameLogic.players.Player;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -211,6 +213,15 @@ public class HalfCasinoGame implements Game, TurnChoice {
 
     public void endGame() {
         setWinners();
+        for (Player player : players) {
+            Statistics tmp = player.getStatistics();
+            tmp.updateStatistics(player.isWinner(), player.getCards(), gameDurationInMilliseconds);
+            try {
+                database.setStatistics(player.getNick(), tmp);
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
     }
 
     private void setWinners() {
