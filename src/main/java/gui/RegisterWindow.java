@@ -23,6 +23,7 @@ public class RegisterWindow extends JFrame{
     private JPasswordField passwordField2;
     private JRadioButton radioButton1;
     private JRadioButton radioButton2;
+    private JButton backButton;
 
 
     public  RegisterWindow (Database database){
@@ -56,6 +57,13 @@ public class RegisterWindow extends JFrame{
                 passwordField2.setEchoChar(radioButton2.isSelected() ? (char) 0 : '\u25CF');
             }
         });
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new MainWindow();
+            }
+        });
 
     }
     public static void main(String[] args) {
@@ -81,6 +89,7 @@ public class RegisterWindow extends JFrame{
             db.closeConnection();
             JOptionPane.showMessageDialog(mainPanel, "Successfully registered");
             dispose();
+            new MainWindow();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(mainPanel, e.getMessage());
         }
