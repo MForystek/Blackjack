@@ -7,12 +7,15 @@ import gameLogic.cards.CardValues;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class StatisticsWindow extends JFrame{
     private JPanel mainPanel;
     private JTextArea textArea;
     private JScrollPane scrollPane;
+    private JButton backButton;
 
     public  StatisticsWindow (Database db){
         super("Statistics");
@@ -26,6 +29,13 @@ public class StatisticsWindow extends JFrame{
         textArea.add(scrollbar);
         loadStatisticsFromDatabase(db);
 
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new MainWindow();
+            }
+        });
     }
 
     public static void main(String[] args) {
