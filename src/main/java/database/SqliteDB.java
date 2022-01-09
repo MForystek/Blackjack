@@ -214,7 +214,7 @@ public class SqliteDB implements Database {
             throw new SQLException("No such user: " + nick);
         }
         try (Statement statement = connection.createStatement()) {
-            statement.execute("UPDATE " + SqliteDB.users + " SET " + SqliteDB.password + " = '" + password + "' WHERE " + SqliteDB.nick + " = '" + nick + "'");
+            statement.execute("UPDATE " + SqliteDB.users + " SET " + SqliteDB.password + " = '" + Hasher.hashPassword(password) + "' WHERE " + SqliteDB.nick + " = '" + nick + "'");
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }

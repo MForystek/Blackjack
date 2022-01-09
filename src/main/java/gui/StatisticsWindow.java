@@ -67,7 +67,7 @@ public class StatisticsWindow extends JFrame{
                         nick + "\t" +
                                 statistics.getWinRate() + "%\t" +
                                 statistics.getNumberOfGames() + "\t" +
-                                statistics.getGameTime() + "\t" +
+                                Math.round(statistics.getGameTime()/36f)/100f + "h\t" +
                                 statistics.getCardOccurrence(CardValues.TWO) + "\t" +
                                 statistics.getCardOccurrence(CardValues.THREE) + "\t" +
                                 statistics.getCardOccurrence(CardValues.FOUR) + "\t" +

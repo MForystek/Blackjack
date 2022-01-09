@@ -21,9 +21,8 @@ public class RegisterWindow extends JFrame {
     private JTextField nickText;
     private JPasswordField passwordField1;
     private JPasswordField passwordField2;
-    private JRadioButton radioButton1;
-    private JRadioButton radioButton2;
     private JButton backButton;
+    private JRadioButton radioButton1;
 
     public  RegisterWindow (Database database) {
         super("Register");
@@ -47,13 +46,7 @@ public class RegisterWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 passwordField1.setEchoChar(radioButton1.isSelected() ? (char) 0 : '\u25CF');
-            }
-        });
-
-        radioButton2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                passwordField2.setEchoChar(radioButton2.isSelected() ? (char) 0 : '\u25CF');
+                passwordField2.setEchoChar(radioButton1.isSelected() ? (char) 0 : '\u25CF');
             }
         });
 
