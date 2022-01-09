@@ -27,9 +27,7 @@ public class DefinePlayersWindow extends JFrame{
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
-
         addPanelsToMainPanel();
-
         add(mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
@@ -135,6 +133,21 @@ public class DefinePlayersWindow extends JFrame{
             constraints.anchor = GridBagConstraints.CENTER;
             add(buttonLogin, constraints);
 
+            JButton buttonToMenu = new JButton("Back to menu");
+            buttonToMenu.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent e) {
+                    dispose();
+                    new MainWindow();
+                }
+            });
+
+            constraints.gridx = 0;
+            constraints.gridy = 3;
+            constraints.gridwidth = 2;
+            constraints.anchor = GridBagConstraints.CENTER;
+
+            add(buttonToMenu, constraints);
+
             setBorder(BorderFactory.createTitledBorder(
                     BorderFactory.createEtchedBorder(), "Player " + playerId));
         }
@@ -210,6 +223,21 @@ public class DefinePlayersWindow extends JFrame{
             constraints.gridy = 2;
             constraints.gridwidth = 2;
             add(confirmButton, constraints);
+
+            JButton buttonToMenu = new JButton("Back to menu");
+            buttonToMenu.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent e) {
+                    dispose();
+                    new MainWindow();
+                }
+            });
+
+            constraints.gridx = 0;
+            constraints.gridy = 3;
+            constraints.gridwidth = 2;
+            constraints.anchor = GridBagConstraints.CENTER;
+
+            add(buttonToMenu, constraints);
 
             setBorder(BorderFactory.createTitledBorder(
                     BorderFactory.createEtchedBorder(), "AI " + this.playerId));
