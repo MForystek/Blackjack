@@ -3,6 +3,7 @@ package gameLogic.cards;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class CardDisplayer {
     private Path baseDirectory;
@@ -18,7 +19,7 @@ public class CardDisplayer {
     }
 
     public CardDisplayer(){
-        this(Path.of("resources", "cardSkins"));
+        this(Path.of("", "resources", "cardSkins").toAbsolutePath());
     }
 
     private void createDirectories() {
@@ -39,6 +40,16 @@ public class CardDisplayer {
             case CARD_SKIN_V_1 -> CARD_SKIN_V_2;
             default -> CARD_SKIN_V_1;
         };
+    }
+
+    public Path getPreviewCardForV1() {
+        return Path.of(baseDirectory.toString(),
+                CARD_SKIN_V_1, "SA." + extension);
+    }
+
+    public Path getPreviewCardForV2() {
+        return Path.of(baseDirectory.toString(),
+                CARD_SKIN_V_2, "SA." + extension);
     }
 
     public Path getFilePath(Card card) {
@@ -100,5 +111,9 @@ public class CardDisplayer {
 
     public void setExtension(String extension) {
         this.extension = extension;
+    }
+
+    public Path getBaseDirectory() {
+        return baseDirectory;
     }
 }

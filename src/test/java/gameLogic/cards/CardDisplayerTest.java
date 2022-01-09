@@ -15,7 +15,7 @@ class CardDisplayerTest {
 
     @BeforeEach
     void before() {
-        cardDisplayer = new CardDisplayer();
+        cardDisplayer = new CardDisplayer(baseDir);
     }
 
 

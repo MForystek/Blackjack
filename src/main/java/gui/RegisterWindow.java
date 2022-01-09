@@ -77,7 +77,7 @@ public class RegisterWindow extends JFrame{
         }
         try {
             db.openConnection();
-            db.register(nickText.getText(), Arrays.toString(passwordField1.getPassword()));
+            db.register(nickText.getText(), String.valueOf(passwordField1.getPassword()));
             db.closeConnection();
             JOptionPane.showMessageDialog(mainPanel, "Successfully registered");
             dispose();
