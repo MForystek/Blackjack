@@ -47,6 +47,12 @@ public class OptionsWindow extends JFrame{
                 new MainWindow();
             }
         });
+        changePasswordButton.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                dispose();
+                new ChangePasswordWindow();
+            }
+        });
 
     }
 
@@ -80,9 +86,4 @@ public class OptionsWindow extends JFrame{
             }
         });
     }
-
-
-//    public static void main(String[] args) {
-//        new OptionsWindow();
-//    }
 }
