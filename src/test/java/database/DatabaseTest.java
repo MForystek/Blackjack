@@ -37,11 +37,4 @@ public class DatabaseTest {
         db.changePassword("test", "test2");
         assertTrue(db.login("test", "test2"));
     }
-
-    @Test
-    void getPassword() throws SQLException {
-        assertTrue(db.login(
-                "test", db.getPassword("test")
-        ));
-    }
 }
