@@ -203,7 +203,7 @@ public class SqliteDB implements Database {
             throw new SQLException("No such user");
         }
         try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM users");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + users + " WHERE " + this.nick + " = " + nick);
             return resultSet.getString("password");
         } catch (Exception e) {
             System.out.println(e.getMessage());
