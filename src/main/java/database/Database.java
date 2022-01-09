@@ -12,8 +12,9 @@ public interface Database {
     void register(String nick, String password) throws SQLException;
     boolean login(String nick, String password) throws SQLException;
     void deleteUser(String nick) throws SQLException;
-    ArrayList<String> getNicks();
-    String getPassword(String nick) throws SQLException;
+    ArrayList<String> getAllNicks();
+    String getPassword(String nick) throws SQLException; //todo: safely delete
+    void changePassword(String nick, String newPassword) throws SQLException;
     Statistics getStatistics(String nick) throws SQLException;
     void setStatistics(String nick, Statistics statistics) throws SQLException;
 }

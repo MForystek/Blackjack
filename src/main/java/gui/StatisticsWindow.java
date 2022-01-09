@@ -50,7 +50,7 @@ public class StatisticsWindow extends JFrame{
                         "Aces pulled" + "\n"
                 );
         db.openConnection();
-        ArrayList<String> nicks = db.getNicks();
+        ArrayList<String> nicks = db.getAllNicks();
         db.closeConnection();
         for (String nick : nicks) {
             try {
