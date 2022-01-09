@@ -41,7 +41,10 @@ public class GameConfig {
     public void createDealer() {
         dealer = new Dealer(deck.takeNextCard(), deck.takeNextCard());
         try {
-            Statistics statistics = getDatabase().getStatistics(dealer.getNick());
+            database.openConnection();
+            Statistics statistics = database.getStatistics(dealer.getNick());
+            database.closeConnection();
+
             dealer.setStatistics(statistics);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -64,17 +67,21 @@ public class GameConfig {
     public String validatePlayerAndAdd(String username, String password){
         if (!isUserAdded(username)) {
             try {
-                String realPassword = getDatabase().getPassword(username);
-                if (realPassword.equals(password)) {
+                database.openConnection();
+                if (database.login(username, password)) {
                     User user = new User(username, password);
-                    Statistics statistics = getDatabase().getStatistics(username);
+                    Statistics statistics = database.getStatistics(username);
+
                     user.setStatistics(statistics);
                     addPlayer(user);
+                    database.closeConnection();
                     return null;
                 } else {
+                    database.closeConnection();
                     return "Invalid username or password";
                 }
             } catch (SQLException e) {
+                database.closeConnection();
                 return "Invalid username or password";
             }
         } else {
@@ -121,7 +128,10 @@ public class GameConfig {
         }
 
         try {
-            Statistics statistics = getDatabase().getStatistics(ai.getNick());
+            database.openConnection();
+            Statistics statistics = database.getStatistics(ai.getNick());
+            database.closeConnection();
+
             ai.setStatistics(statistics);
             players.add(ai);
         } catch (SQLException e) {

@@ -1,8 +1,6 @@
 package gui;
 
-import database.Database;
-import database.SqliteDB;
-import gameLogic.GameConfig;
+import applicationLogic.ApplicationData;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -20,6 +18,7 @@ public class NewGameWindow extends JFrame{
     private JRadioButton a15SecondsRadioButton;
     private JComboBox gameModeComboBox;
     private JButton definePlayersButton;
+    private JButton backToMenuButton;
     private ButtonGroup buttonGroup;
 
     private boolean status;
@@ -28,16 +27,16 @@ public class NewGameWindow extends JFrame{
     private int numOfDecks;
     private int timePerTurn;
 
-    private GameConfig gameConfig;
+    private ApplicationData appData;
 
-    public NewGameWindow(Database database) {
+    public NewGameWindow(ApplicationData applicationData) {
         super("New game");
         setContentPane(this.mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
         setVisible(true);
 
-        gameConfig = new GameConfig(database);
+        appData = ApplicationData.getInstance();
 
         a15SecondsRadioButton.setSelected(true);
 
@@ -45,6 +44,13 @@ public class NewGameWindow extends JFrame{
         buttonGroup.add(a5SecondsRadioButton);
         buttonGroup.add(a10SecondsRadioButton);
         buttonGroup.add(a15SecondsRadioButton);
+
+        backToMenuButton.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                new MainWindow();
+                dispose();
+            }
+        });
 
         definePlayersButton.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent event) {
@@ -78,15 +84,15 @@ public class NewGameWindow extends JFrame{
                 }
 
                 if (status) {
-                    String errorMessage = gameConfig.validateAndSet(gameModeComboBox.getSelectedItem().toString(),
+                    String errorMessage = appData.getGameConfig().validateAndSet(gameModeComboBox.getSelectedItem().toString(),
                             numOfHumans,
                             numOfAis,
                             numOfDecks,
                             timePerTurn
                     );
 
-                    if (gameConfig.isValid()) {
-                        new DefinePlayersWindow(gameConfig);
+                    if (appData.getGameConfig().isValid()) {
+                        new DefinePlayersWindow();
                         dispose();
                     } else {
                         displayPopUpAndSetStatus(errorMessage);

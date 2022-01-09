@@ -1,5 +1,6 @@
 package gui;
 
+import applicationLogic.ApplicationData;
 import gameLogic.GameConfig;
 
 import java.awt.*;
@@ -16,11 +17,13 @@ public class DefinePlayersWindow extends JFrame{
 
     private int numOfPanels;
     private int currentPanelIndex = 1;
+
     private GameConfig gameConfig;
+    private ApplicationData appData;
 
-    public DefinePlayersWindow(GameConfig gameConfig) {
-
-        this.gameConfig = gameConfig;
+    public DefinePlayersWindow() {
+        this.appData = ApplicationData.getInstance();
+        this.gameConfig = appData.getGameConfig();
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
@@ -79,7 +82,7 @@ public class DefinePlayersWindow extends JFrame{
             currentPanelIndex++;
         } else {
             dispose();
-            new HalfCasinoGameWindow(gameConfig);
+            new HalfCasinoGameWindow(appData.getGameConfig());
         }
     }
     

@@ -1,7 +1,6 @@
 package gui;
 
-import database.Database;
-import database.SqliteDB;
+import applicationLogic.ApplicationData;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -15,7 +14,7 @@ public class MainWindow extends JFrame{
     private JLabel optionsLabel;
     private JLabel exitLabel;
 
-    private Database database;
+    private ApplicationData appData;
 
     public MainWindow() {
 
@@ -25,32 +24,49 @@ public class MainWindow extends JFrame{
         pack();
         setVisible(true);
 
-        initDatabase();
+        initApplicationData();
+        addListeners();
+    }
 
+    public void initApplicationData () {
+        appData = ApplicationData.getInstance();
+    }
+
+
+    public void addListeners(){
         newGameLabel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                new NewGameWindow(database);
-                dispose();
-            }
-        });
-        statisticsLabel.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                new StatisticsWindow(database);
+                new NewGameWindow(appData);
                 dispose();
             }
         });
 
+        optionsLabel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                new OptionsWindow();
+                dispose();
+            }
+        });
+
+        statisticsLabel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                new StatisticsWindow(appData.getDatabase());
+                dispose();
+            }
+        });
+
+        createAccountLabel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                new RegisterWindow(appData.getDatabase());
+                dispose();
+            }
+        });
 
         exitLabel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 System.exit(0);
             }
         });
-
-    }
-
-    public void initDatabase() {
-        database = new SqliteDB();
     }
 
     public static void main(String [] args) {
