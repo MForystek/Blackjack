@@ -22,7 +22,7 @@ public class StatisticsWindow extends JFrame{
         setContentPane(this.mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
-        setSize(1500,1000);
+        setSize(1500,500);
         setVisible(true);
         textArea.setEditable(false);
         Scrollbar scrollbar = new Scrollbar();
@@ -36,10 +36,6 @@ public class StatisticsWindow extends JFrame{
                 new MainWindow();
             }
         });
-    }
-
-    public static void main(String[] args) {
-        new StatisticsWindow(new SqliteDB());
     }
 
     private void loadStatisticsFromDatabase(Database db){

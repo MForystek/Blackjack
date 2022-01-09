@@ -196,7 +196,7 @@ public class SqliteDB implements Database {
         return list;
     }
 
-    public String getPassword(String nick) throws SQLException {
+    private String getPassword(String nick) throws SQLException {
         if (isNickAvailable(nick)) {
             throw new SQLException("No such user: " + nick);
         }
