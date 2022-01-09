@@ -111,4 +111,8 @@ public class Player {
     public void setEnded() {
         isEnded = true;
     }
+
+    public String getGameNick() {
+        return nick;
+    }
 }

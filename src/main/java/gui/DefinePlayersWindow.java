@@ -79,7 +79,7 @@ public class DefinePlayersWindow extends JFrame{
             currentPanelIndex++;
         } else {
             dispose();
-            new GameWindow(gameConfig);
+            new HalfCasinoGameWindow(gameConfig);
         }
     }
     

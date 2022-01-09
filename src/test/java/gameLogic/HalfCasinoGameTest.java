@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class GameTest {
+class HalfCasinoGameTest {
 
     @Test
     void drawingCardDuringThePlayerTurnTest() {
@@ -18,15 +18,19 @@ class GameTest {
          */
 
         Database database = new SqliteDB();
-        GameManager gameManager = new GameManager(database, 2, 2, GameModes.MEDIUM);
-        Drawator drawator = gameManager.getDrawator();
+        GameManager gameManager = new GameManager(database, 3, 2, GameModes.MEDIUM);
+        TurnChoice turnChoice = gameManager.getTurnChoice();
 
         gameManager.setDebug();
         gameManager.start();
         for (int i = 0; i < 10; i++) {
             try {
-                if (drawator != null) {
-                    drawator.draw();
+                if (turnChoice != null) {
+                    if (i == 4) {
+                        turnChoice.pass();
+                    } else {
+                        turnChoice.draw();
+                    }
                 }
                 Thread.sleep(10);
             } catch (InterruptedException e) {
