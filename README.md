@@ -21,3 +21,8 @@
         - okon statystyk - SS
         - okno opcje: zmiana skórki kart + obsługa zmiany skórki - MK
         - skórki dla kart - MF 
+## Bugi
+### Mamy:
+        - 
+### TODO:
+       
