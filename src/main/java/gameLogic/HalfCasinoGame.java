@@ -1,5 +1,6 @@
 package gameLogic;
 
+import applicationLogic.ApplicationData;
 import database.Database;
 import gameLogic.cards.Card;
 import gameLogic.cards.Decks;
@@ -14,6 +15,8 @@ import static gameLogic.players.Player.MAX_ALLOWED_POINTS_THRESHOLD;
 
 public class HalfCasinoGame implements Game, TurnChoice {
     private boolean isDebug = false;
+
+    private GameConfig gameConfig;
 
     private Database database;
     private long gameDurationInMilliseconds;
@@ -31,67 +34,42 @@ public class HalfCasinoGame implements Game, TurnChoice {
     private boolean isEnded;
     private volatile AtomicInteger countdown;
 
-    public static HalfCasinoGame createGame(Database database, int numberOfDecks, int numberOfPlayers, GameModes gameMode) {
-        if (!isComplete(database, numberOfPlayers, numberOfDecks, gameMode)) {
+    public static HalfCasinoGame createGame() {
+        GameConfig gameConfig = ApplicationData.getInstance().getGameConfig();
+
+        if (!gameConfig.isValid()) {
             throw new IllegalArgumentException();
         }
-        return new HalfCasinoGame(database, numberOfDecks, numberOfPlayers, gameMode);
+        return new HalfCasinoGame();
     }
 
-    private static boolean isComplete(Database database, int numberOfPlayers, int numberOfDecks, GameModes gameMode) {
-        return checkDatabase(database)
-                && checkNumberOfPlayers(numberOfPlayers)
-                && checkNumberOfDecks(numberOfDecks)
-                && checkGameMode(gameMode);
-    }
-
-    private static boolean checkDatabase(Database database) {
-        return database != null;
-    }
-
-    private static boolean checkNumberOfPlayers(int numberOfPlayers) {
-        return numberOfPlayers >= 1 && numberOfPlayers <= 4;
-    }
-
-    private static boolean checkNumberOfDecks(int numberOfDecks) {
-        return numberOfDecks >= 1 && numberOfDecks <= 8;
-    }
-
-    private static boolean checkGameMode(GameModes gameMode) {
-        return gameMode != null;
-    }
-
-    private HalfCasinoGame(Database database, int numberOfDecks, int numberOfPlayers, GameModes gameMode) {
+    private HalfCasinoGame() {
+        gameConfig = ApplicationData.getInstance().getGameConfig();
         isReadyToBePlayed = false;
-        this.database = database;
-        this.gameMode = gameMode;
+        this.database = gameConfig.getDatabase();
+        this.gameMode = gameConfig.getGameMode();
         isEnded = false;
         countdown = new AtomicInteger(0);
-        decks = new Decks(numberOfDecks);
-        dealer = new Dealer(decks.takeNextCard(), decks.takeNextCard());
+        decks = gameConfig.getDecks();
+        dealer = gameConfig.getDealer();
 
         //order of operations matter
-        initializePlayers(numberOfPlayers);
+        initializePlayers();
         initializeCountdown();
         isReadyToBePlayed = true;
     }
 
-    private void initializePlayers(int numberOfPlayers) {
-        this.numberOfPlayers = numberOfPlayers;
+    private void initializePlayers() {
+        numberOfPlayers = gameConfig.getNumberOfPlayers();
         indexOfCurrentPlayer = 0;
-        players = new ArrayList<>();
-
-        for (int i = 0; i < numberOfPlayers; i++) {
-            players.add(new Player("Player" + i));
-            players.get(i).clearGameData();
-        }
+        players = gameConfig.getPlayers();
     }
 
     private void initializeCountdown() {
         countdownAndAdjusterRun = () -> {
             try {
-                countdown = new AtomicInteger(gameMode.getTimeForMove());
-                while (countdown.intValue() > 0) {
+                countdown.set(gameMode.getTimeForMove());
+                while (countdown.intValue() >= 0) {
                     Thread.sleep(1000);
                     countdown.decrementAndGet();
                 }
@@ -154,24 +132,20 @@ public class HalfCasinoGame implements Game, TurnChoice {
     }
 
     @Override
-    public Optional<Card> draw() {
+    public void draw() {
         if (isNoRunningTurn()) {
-            return Optional.empty();
+            return;
         }
 
         try {
             if (isDebug) {
                 System.out.println("Player " + currentPlayer.getNick() + " draw card");
             }
-
             Card nextCard = decks.takeNextCard();
             currentPlayer.addCard(nextCard);
             countdownAndAdjuster.interrupt();
-
-            return Optional.of(nextCard);
         } catch (EmptyStackException e) {
             currentPlayer.setEnded();
-            return Optional.empty();
         }
     }
 
@@ -251,13 +225,8 @@ public class HalfCasinoGame implements Game, TurnChoice {
     }
 
     @Override
-    public Map<String, Object> getBeginningResults() {
-        Map<String, Object> references = new HashMap<>();
-        references.put("dealersVisibleCard", dealer);
-        references.put("dealerHidden", dealer);
-        references.put("players", players);
-        references.put("countdown", countdown);
-        return references;
+    public AtomicInteger getCountdown() {
+        return countdown;
     }
 
     public boolean isEnded() {
@@ -270,5 +239,12 @@ public class HalfCasinoGame implements Game, TurnChoice {
 
     public void setDebug() {
         isDebug = !isDebug;
+    }
+
+    public long getGameDurationInMilliseconds() {
+        if (isEnded) {
+            return gameDurationInMilliseconds;
+        }
+        return 0;
     }
 }

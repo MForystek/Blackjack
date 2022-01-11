@@ -17,7 +17,6 @@ public class MainWindow extends JFrame{
     private ApplicationData appData;
 
     public MainWindow() {
-
         super("Blackjack");
         setContentPane(this.mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -36,7 +35,7 @@ public class MainWindow extends JFrame{
     public void addListeners(){
         newGameLabel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                new NewGameWindow(appData);
+                new NewGameWindow();
                 dispose();
             }
         });

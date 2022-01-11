@@ -10,6 +10,10 @@ public class ApplicationData {
     private GameConfig gameConfig;
     private CardDisplayer cardDisplayer;
 
+    public static void reset() {
+        appData = null;
+    }
+
     public static ApplicationData getInstance(){
         return appData == null ? appData = new ApplicationData(): appData;
     }

@@ -1,6 +1,6 @@
 package gameLogic;
 
-import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public interface Game {
     boolean isReadyToBePlayed();
@@ -9,5 +9,5 @@ public interface Game {
     void makeTurn();
 
     void endGame();
-    Map<String, Object> getBeginningResults();
+    AtomicInteger getCountdown();
 }

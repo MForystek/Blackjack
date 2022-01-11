@@ -12,11 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameConfig {
+    private static final int MAX_NUM_OF_PLAYERS = 4;
+    private static final int MAX_NUM_OF_DECKS = 8;
+
     private Database database;
 
     private List<Player> players;
     private Dealer dealer;
-    private Decks deck;
+    private Decks decks;
 
     private boolean isValid;
     private int numOfHumans;
@@ -24,128 +27,18 @@ public class GameConfig {
     private int numOfDecks;
     private int timePerTurn;
 
-    private static final int MAX_NUM_OF_PLAYERS = 4;
-    private static final int MAX_NUM_OF_DECKS = 8;
-
-
-    public GameConfig(Database database){
+    public GameConfig(Database database) {
         setDatabase(database);
         players = new ArrayList<>();
         isValid = false;
     }
 
-    public void createDeck(int numberOfDecks) {
-        deck = new Decks(numberOfDecks);
-    }
-
-    public void createDealer() {
-        dealer = new Dealer(deck.takeNextCard(), deck.takeNextCard());
-        try {
-            database.openConnection();
-            Statistics statistics = database.getStatistics(dealer.getNick());
-            database.closeConnection();
-
-            dealer.setStatistics(statistics);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void addPlayer(Player player) {
-        if (deck == null) {
-            createDeck(numOfDecks);
-        }
-        if (dealer == null) {
-            createDealer();
-        }
-        players.add(player);
-    }
-
-    /**
-     * @return if successful return null and add player to list, else return error message (as String)
-     */
-    public String validatePlayerAndAdd(String username, String password){
-        if (!isUserAdded(username)) {
-            try {
-                database.openConnection();
-                if (database.login(username, password)) {
-                    User user = new User(username, password);
-                    Statistics statistics = database.getStatistics(username);
-
-                    user.setStatistics(statistics);
-                    addPlayer(user);
-                    database.closeConnection();
-                    return null;
-                } else {
-                    database.closeConnection();
-                    return "Invalid username or password";
-                }
-            } catch (SQLException e) {
-                database.closeConnection();
-                return "Invalid username or password";
-            }
-        } else {
-            return "User was added previously";
-        }
-    }
-
-    public boolean isUserAdded(String username) {
-        boolean isUserAdded = false;
-        for (Player user : players) {
-            if (user.getNick().equals(username)) {
-               isUserAdded = true;
-            }
-        }
-        if (isUserAdded) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-    /**
-    * @param  level one of the strings: "Easy", "Medium", "Hard"
-     *@param nameSuffix int value which will be added at the end of name
-    */
-    public void createAI(String level, int nameSuffix) {
-        if (deck == null) {
-            createDeck(numOfDecks);
-        }
-        if (dealer == null) {
-            createDealer();
-        }
-
-       Player ai = switch (level) {
-            case "Easy" -> new EasyBot("Easy Bot " + nameSuffix);
-            case "Medium" -> new MediumBot("Medium Bot " + nameSuffix, deck, getDealer().getVisibleCard());
-            case "Hard" -> new HardBot("Hard Bot " + nameSuffix, deck);
-            default -> null;
-        };
-
-        if (ai == null) {
-            throw new IllegalArgumentException("Level argument is invalid");
-        }
-
-        try {
-            database.openConnection();
-            Statistics statistics = database.getStatistics(ai.getNick());
-            database.closeConnection();
-
-            ai.setStatistics(statistics);
-            players.add(ai);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * @return if successful return null and set appropriate class attributes, else return error message (as String)
      */
-    public String validateAndSet(String gameMode, int numOfHumans, int numOfAis, int numOfDecks, int timePerTurn) {
+    public String validateAndSet(String gameType, int numOfHumans, int numOfAis, int numOfDecks, int timePerTurn) {
         this.isValid = false;
 
-        boolean status = true;
         this.numOfHumans = -1;
         this.numOfAis = -1;
         this.numOfDecks = -1;
@@ -158,12 +51,15 @@ public class GameConfig {
             return "Amount of Humans must be integer value between 0 and 4";
         }
 
+        if (numOfAis + numOfHumans > MAX_NUM_OF_PLAYERS) {
+            return "Maximum numbers of players exceed " + MAX_NUM_OF_PLAYERS;
+        }
+
         if (numOfDecks < 1 || numOfDecks > MAX_NUM_OF_DECKS) {
             return "Amount of Decks must be integer value between 1 and 8";
         }
 
-
-        switch (gameMode) {
+        switch (gameType) {
             case "Humans": {
                 if (numOfHumans == 0) {
                     return "You must select at least one player";
@@ -192,20 +88,108 @@ public class GameConfig {
 
         }
 
-        if (numOfAis + numOfHumans > MAX_NUM_OF_PLAYERS) {
-            return "Maximum numbers of players exceed " + MAX_NUM_OF_PLAYERS;
+        isValid = true;
+        this.numOfAis = numOfAis;
+        this.numOfHumans = numOfHumans;
+        this.numOfDecks = numOfDecks;
+        this.timePerTurn = timePerTurn;
+
+        return null;
+    }
+
+    /**
+     * @return if successful return null and add player to list, else return error message (as String)
+     */
+    public String validatePlayerAndAdd(String username, String password) {
+        if (!isUserAdded(username)) {
+            try {
+                database.openConnection();
+                if (database.login(username, password)) {
+                    User user = new User(username, password);
+                    Statistics statistics = database.getStatistics(username);
+
+                    user.setStatistics(statistics);
+                    addPlayer(user);
+                    database.closeConnection();
+                    return null;
+                } else {
+                    database.closeConnection();
+                    return "Invalid username or password";
+                }
+            } catch (SQLException e) {
+                database.closeConnection();
+                return "Invalid username or password";
+            }
+        } else {
+            return "User was added previously";
+        }
+    }
+
+    public boolean isUserAdded(String username) {
+        for (Player user : players) {
+            if (user.getNick().equals(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addPlayer(Player player) {
+        if (decks == null) {
+            createDeck(numOfDecks);
+        }
+        if (dealer == null) {
+            createDealer();
+        }
+        players.add(player);
+    }
+
+    public void createDeck(int numberOfDecks) {
+        decks = new Decks(numberOfDecks);
+    }
+
+    public void createDealer() {
+        dealer = new Dealer(decks.takeNextCard(), decks.takeNextCard());
+        try {
+            database.openConnection();
+            Statistics statistics = database.getStatistics(dealer.getNick());
+            database.closeConnection();
+
+            dealer.setStatistics(statistics);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+    * @param  level one of the strings: "Easy", "Medium", "Hard"
+     *@param nameSuffix int value which will be added at the end of name
+    */
+    public void createAI(String level, int nameSuffix) {
+        if (decks == null) {
+            createDeck(numOfDecks);
+        }
+        if (dealer == null) {
+            createDealer();
         }
 
-        if (status) {
-            isValid = true;
-            this.numOfAis = numOfAis;
-            this.numOfHumans = numOfHumans;
-            this.numOfDecks = numOfDecks;
-            this.timePerTurn = timePerTurn;
+       Player ai = switch (level) {
+            case "Easy" -> new EasyBot("Easy Bot " + nameSuffix);
+            case "Medium" -> new MediumBot("Medium Bot " + nameSuffix, decks, getDealer().getVisibleCard());
+            case "Hard" -> new HardBot("Hard Bot " + nameSuffix, decks);
+            default -> throw new IllegalArgumentException("Level argument is invalid");
+        };
 
-            return null;
-        } else {
-            return "Unknown error occurs";
+        try {
+            database.openConnection();
+            Statistics statistics = database.getStatistics(ai.getNick());
+            database.closeConnection();
+
+            ai.setStatistics(statistics);
+            players.add(ai);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -227,12 +211,12 @@ public class GameConfig {
         this.dealer = dealer;
     }
 
-    public Decks getDeck() {
-        return deck;
+    public Decks getDecks() {
+        return decks;
     }
 
-    public void setDeck(Decks deck) {
-        this.deck = deck;
+    public void setDecks(Decks decks) {
+        this.decks = decks;
     }
 
     public int getTimePerTurn() {
@@ -281,5 +265,17 @@ public class GameConfig {
 
     public void setDatabase(Database database) {
         this.database = database;
+    }
+
+    public GameModes getGameMode() {
+        return switch (getTimePerTurn()) {
+            case 10 -> GameModes.MEDIUM;
+            case 15 -> GameModes.HARD;
+            default -> GameModes.EASY;
+        };
+    }
+
+    public int getNumberOfPlayers() {
+        return getNumOfHumans() + getNumOfAis();
     }
 }

@@ -22,8 +22,8 @@ public class DefinePlayersWindow extends JFrame{
     private ApplicationData appData;
 
     public DefinePlayersWindow() {
-        this.appData = ApplicationData.getInstance();
-        this.gameConfig = appData.getGameConfig();
+        appData = ApplicationData.getInstance();
+        gameConfig = appData.getGameConfig();
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
@@ -82,7 +82,7 @@ public class DefinePlayersWindow extends JFrame{
             currentPanelIndex++;
         } else {
             dispose();
-            new HalfCasinoGameWindow(appData.getGameConfig());
+            new HalfCasinoGameWindow();
         }
     }
     
