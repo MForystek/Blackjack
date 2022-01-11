@@ -1,6 +1,7 @@
 package gui;
 
 import applicationLogic.ApplicationData;
+import applicationLogic.Instruction;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -13,6 +14,7 @@ public class MainWindow extends JFrame{
     private JLabel statisticsLabel;
     private JLabel optionsLabel;
     private JLabel exitLabel;
+    private JLabel instructionLabel;
 
     private ApplicationData appData;
 
@@ -58,6 +60,12 @@ public class MainWindow extends JFrame{
             public void mouseClicked(MouseEvent e) {
                 new RegisterWindow(appData.getDatabase());
                 dispose();
+            }
+        });
+
+        instructionLabel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                JOptionPane.showMessageDialog(mainPanel, Instruction.getInstruction());
             }
         });
 

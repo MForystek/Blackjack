@@ -7,29 +7,35 @@ import gameLogic.cards.CardValues;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class StatisticsWindow extends JFrame{
     private JPanel mainPanel;
     private JTextArea textArea;
     private JScrollPane scrollPane;
+    private JButton backButton;
 
     public  StatisticsWindow (Database db){
         super("Statistics");
         setContentPane(this.mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
-        setSize(1500,1000);
+        setSize(1500,500);
         setVisible(true);
         textArea.setEditable(false);
         Scrollbar scrollbar = new Scrollbar();
         textArea.add(scrollbar);
         loadStatisticsFromDatabase(db);
 
-    }
-
-    public static void main(String[] args) {
-        new StatisticsWindow(new SqliteDB());
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new MainWindow();
+            }
+        });
     }
 
     private void loadStatisticsFromDatabase(Database db){
@@ -61,7 +67,7 @@ public class StatisticsWindow extends JFrame{
                         nick + "\t" +
                                 statistics.getWinRate() + "%\t" +
                                 statistics.getNumberOfGames() + "\t" +
-                                statistics.getGameTime() + "\t" +
+                                Math.round(statistics.getGameTime()/36f)/100f + "h\t" +
                                 statistics.getCardOccurrence(CardValues.TWO) + "\t" +
                                 statistics.getCardOccurrence(CardValues.THREE) + "\t" +
                                 statistics.getCardOccurrence(CardValues.FOUR) + "\t" +
