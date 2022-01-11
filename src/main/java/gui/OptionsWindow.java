@@ -1,10 +1,10 @@
 package gui;
 
 import applicationLogic.ApplicationData;
-import database.Database;
 import gameLogic.cards.CardDisplayer;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -23,17 +23,17 @@ public class OptionsWindow extends JFrame{
         super("Options");
         setContentPane(this.mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setPreferredSize(new Dimension(400, 300));
         pack();
         setVisible(true);
 
         appData = ApplicationData.getInstance();
 
-        //ImageIcon skinV1 = createImageIcon(appData.getCardDisplayer().getPreviewCardForV1().toString());
-
+        ImageIcon skinV1 = new ImageIcon(appData.getCardDisplayer().getPreviewCardForV1().toString());
         ImageIcon skinV2 = new ImageIcon(appData.getCardDisplayer().getPreviewCardForV2().toString());
 
-        //skinV1Label = new JLabel(skinV1);
-        skinV2Label = new JLabel(skinV2);
+        skinV1Label.setIcon(skinV1);
+        skinV2Label.setIcon(skinV2);
 
         ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(skinV1RadioButton);
@@ -56,15 +56,6 @@ public class OptionsWindow extends JFrame{
 
     }
 
-    private ImageIcon createImageIcon(String path) {
-        java.net.URL imgURL = getClass().getResource(path);
-        if (imgURL != null) {
-            return new ImageIcon(imgURL);
-        } else {
-            System.err.println("Couldn't find file: " + path);
-            return null;
-        }
-    }
 
     private void manageRadioButtons() {
         switch (appData.getCardDisplayer().getCardSkinDirectory()) {
