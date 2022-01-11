@@ -2,10 +2,10 @@ package applicationLogic;
 
 import gameLogic.players.Player;
 
-public class User extends Player{
+public class User extends Player {
     private String password;
 
-    public User(String nick, String password){
+    public User(String nick, String password) {
         super(nick);
         this.password = password;
     }
@@ -20,6 +20,7 @@ public class User extends Player{
 
 
     // --------------------------
+
 
     public String getPassword() {
         return password;
