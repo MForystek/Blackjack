@@ -20,6 +20,10 @@ public class EasyBot extends Player implements AI {
     }
 
     public boolean wantToDrawCard() {
+        if (getTotalPoints() >= 21) {
+            setEnded();
+            return false;
+        }
         if (isEnded()) {
             return false;
         }

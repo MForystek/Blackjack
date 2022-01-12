@@ -28,9 +28,7 @@ public class GameManager extends Thread {
         game.startPlaying();
         gameWindow.showBeginningResults();
         while(!game.isEnded()) {
-            gameWindow.showTurnResults();
             game.makeTurn();
-            gameWindow.showTurnResults();
         }
         game.endGame();
         gameWindow.showGameResults();
@@ -42,6 +40,22 @@ public class GameManager extends Thread {
 
     public AtomicInteger getCountdown() {
         return game.getCountdown();
+    }
+
+    public int getIndexOfCurrentPlayer() {
+        return game.getIndexOfCurrentPlayer();
+    }
+
+    public boolean isEnded() {
+        return game.isEnded();
+    }
+
+    public boolean isDealerTurn(){
+        return game.isDealerTurn();
+    }
+
+    public boolean isHumanTurn(){
+        return game.isHumanTurn();
     }
 
     //For tests

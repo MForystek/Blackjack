@@ -40,6 +40,11 @@ public class HardBot extends Player implements AI {
         }
 
         bestScore = getTotalPoints();
+        if (bestScore >= 21) {
+            setEnded();
+            return false;
+        }
+
         Card nextCard;
         try {
             nextCard = deck.getNextCard();
