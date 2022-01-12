@@ -3,10 +3,8 @@ package gui;
 import applicationLogic.ApplicationData;
 
 import javax.swing.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
-public class NewGameWindow extends JFrame{
+public class NewGameWindow extends JFrame {
     private JPanel mainPanel;
     private JPanel leftPanel;
     private JPanel rightPanel;
@@ -29,7 +27,7 @@ public class NewGameWindow extends JFrame{
 
     private ApplicationData appData;
 
-    public NewGameWindow(ApplicationData applicationData) {
+    public NewGameWindow() {
         super("New game");
         setContentPane(this.mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,60 +43,57 @@ public class NewGameWindow extends JFrame{
         buttonGroup.add(a10SecondsRadioButton);
         buttonGroup.add(a15SecondsRadioButton);
 
-        backToMenuButton.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                new MainWindow();
-                dispose();
-            }
+        backToMenuButton.addActionListener(event -> {
+            new MainWindow();
+            dispose();
         });
 
-        definePlayersButton.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent event) {
-                //suppose everything is ok, then check some conditions and eventually set 'status' to false
-                status = true;
+        definePlayersButton.addActionListener(event -> {
+            //suppose everything is ok, then check some conditions and eventually set 'status' to false
+            status = true;
 
-                if (a5SecondsRadioButton.isSelected()) {
-                    timePerTurn = 5;
-                } else if(a10SecondsRadioButton.isSelected()) {
-                    timePerTurn = 10;
+            if (a5SecondsRadioButton.isSelected()) {
+                timePerTurn = 5;
+            } else if (a10SecondsRadioButton.isSelected()) {
+                timePerTurn = 10;
+            } else {
+                timePerTurn = 15;
+            }
+
+            try {
+                numOfHumans = Integer.parseInt(numOfHumansText.getText());
+            } catch (NumberFormatException e) {
+                displayPopUpAndSetStatus("Amount of humans field is invalid" );
+            }
+
+            try {
+                numOfAis = Integer.parseInt(numOfAIsText.getText());
+            } catch (NumberFormatException e) {
+                displayPopUpAndSetStatus("Amount of AIs field is invalid" );
+            }
+
+            try {
+                numOfDecks = Integer.parseInt(numOfDecksText.getText());
+            } catch (NumberFormatException e) {
+                displayPopUpAndSetStatus( "Amount of Decks field is invalid" );
+            }
+
+            if (status) {
+                String errorMessage = appData.getGameConfig().validateAndSet(
+                        gameModeComboBox.getSelectedItem().toString(),
+                        numOfHumans,
+                        numOfAis,
+                        numOfDecks,
+                        timePerTurn
+                );
+
+                if (appData.getGameConfig().isValid()) {
+                    new DefinePlayersWindow();
+                    dispose();
                 } else {
-                    timePerTurn = 15;
+                    displayPopUpAndSetStatus(errorMessage);
                 }
 
-                try {
-                     numOfHumans = Integer.parseInt(numOfHumansText.getText());
-                } catch (NumberFormatException e) {
-                    displayPopUpAndSetStatus("Amount of humans field is invalid" );
-                }
-
-                try {
-                    numOfAis = Integer.parseInt(numOfAIsText.getText());
-                } catch (NumberFormatException e) {
-                   displayPopUpAndSetStatus("Amount of AIs field is invalid" );
-                }
-
-                try {
-                    numOfDecks = Integer.parseInt(numOfDecksText.getText());
-                } catch (NumberFormatException e) {
-                   displayPopUpAndSetStatus( "Amount of Decks field is invalid" );
-                }
-
-                if (status) {
-                    String errorMessage = appData.getGameConfig().validateAndSet(gameModeComboBox.getSelectedItem().toString(),
-                            numOfHumans,
-                            numOfAis,
-                            numOfDecks,
-                            timePerTurn
-                    );
-
-                    if (appData.getGameConfig().isValid()) {
-                        new DefinePlayersWindow();
-                        dispose();
-                    } else {
-                        displayPopUpAndSetStatus(errorMessage);
-                    }
-
-                }
             }
         });
     }

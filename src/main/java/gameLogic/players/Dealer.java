@@ -22,10 +22,6 @@ public class Dealer extends Player implements AI {
         return true;
     }
 
-    public boolean haveToManyPoints() {
-        return getTotalPoints() > MAX_ALLOWED_POINTS_THRESHOLD;
-    }
-
     private boolean canDrawCard () {
         int score = getTotalPoints();
         return score <= THRESHOLD_FOR_DEALER_TO_DRAW_CARDS && !isEnded;
