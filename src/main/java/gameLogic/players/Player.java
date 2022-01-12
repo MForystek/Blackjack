@@ -4,9 +4,10 @@ import applicationLogic.Statistics;
 import gameLogic.cards.Card;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
-public class Player {
+public class Player implements Comparable<Object> {
     public static final int MAX_ALLOWED_POINTS_THRESHOLD = 21;
 
     private String nick;
@@ -62,6 +63,14 @@ public class Player {
             value = value + card.getValue();
         }
         return value;
+    }
+
+    @Override
+    public int compareTo(Object anotherPlayer) throws ClassCastException {
+        if (!(anotherPlayer instanceof Player)) {
+            throw new ClassCastException("A Player object expected.");
+        }
+        return this.getTotalPoints() - ((Player) anotherPlayer).getTotalPoints();
     }
 
 

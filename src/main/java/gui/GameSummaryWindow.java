@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GameSummaryWindow extends JFrame {
 
@@ -23,6 +24,7 @@ public class GameSummaryWindow extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
         setVisible(true);
+        setSize(300, 500);
 
         printOutPlayers(players);
 
@@ -36,11 +38,11 @@ public class GameSummaryWindow extends JFrame {
     }
 
     private void printOutPlayers(List<Player> players) {
-        for (Player player : players) {
+        for (Player player : players.stream().sorted().toList()) {
             if (player.isWinner()) {
-                winners.append(player.getNick() + ": " + player.getTotalPoints());
+                winners.append(player.getNick() + ": " + player.getTotalPoints() + "pts\n");
             } else {
-                losers.append(player.getNick() + ": " + player.getTotalPoints());
+                losers.append(player.getNick() + ": " + player.getTotalPoints() + "pts\n");
             }
         }
     }
@@ -55,7 +57,15 @@ public class GameSummaryWindow extends JFrame {
         p2.setIsWinner(false);
         p2.addCard(new Card(CardColors.DIAMONDS, CardValues.TWO));
 
-        new GameSummaryWindow(List.of(p1, p2));
+        Player p3 = new Player("p3");
+        p3.setIsWinner(false);
+        p3.addCard(new Card(CardColors.DIAMONDS, CardValues.FIVE));
+
+        Player p4 = new Player("p4");
+        p4.setIsWinner(false);
+        p4.addCard(new Card(CardColors.DIAMONDS, CardValues.FOUR));
+
+        new GameSummaryWindow(List.of(p1, p2, p3, p4));
     }
 
 }
