@@ -10,4 +10,7 @@ public interface Game {
 
     void endGame();
     AtomicInteger getCountdown();
+    int getIndexOfCurrentPlayer();
+    boolean isDealerTurn();
+    boolean isHumanTurn();
 }

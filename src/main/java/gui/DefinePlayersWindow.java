@@ -221,7 +221,6 @@ public class DefinePlayersWindow extends JFrame{
 
             constraints.gridx = 0;
             constraints.gridy = 2;
-            constraints.gridwidth = 2;
             add(confirmButton, constraints);
 
             JButton buttonToMenu = new JButton("Back to menu");
@@ -234,7 +233,6 @@ public class DefinePlayersWindow extends JFrame{
 
             constraints.gridx = 0;
             constraints.gridy = 3;
-            constraints.gridwidth = 2;
             constraints.anchor = GridBagConstraints.CENTER;
 
             add(buttonToMenu, constraints);

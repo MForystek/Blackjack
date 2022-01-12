@@ -34,6 +34,11 @@ public class MediumBot extends Player implements AI {
     }
 
     public boolean wantToDrawCard() {
+        if (getTotalPoints() >= 21) {
+            setEnded();
+            return false;
+        }
+
         if (deck.isEmpty() || isEnded()) {
             setEnded();
             return false;

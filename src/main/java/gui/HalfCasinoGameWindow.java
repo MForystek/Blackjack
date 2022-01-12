@@ -2,64 +2,43 @@ package gui;
 
 import applicationLogic.ApplicationData;
 import gameLogic.GameManager;
-import gameLogic.cards.Card;
+import gameLogic.cards.CardDisplayer;
 import gameLogic.players.Dealer;
 import gameLogic.players.Player;
 
 import javax.swing.*;
+import java.awt.*;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
 public class HalfCasinoGameWindow extends JFrame implements GameWindow {
     private JPanel mainPanel;
-    private JPanel player1Panel;
-    private JPanel player4Panel;
-    private JPanel player3Panel;
-    private JPanel player2Panel;
-    private JPanel dealersCardsPanel;
-    private JLabel hiddenCardLabel;
-    private JLabel visibleCardLabel;
-    private JLabel player1TurnMarkerLabel;
-    private JLabel player4TurnMarkerLabel;
-    private JLabel player3TurnMarkerLabel;
-    private JLabel player2TurnMarkerLabel;
-    private JList<Icon> player1CardsJList;
-    private JList<Icon> player2CardsJList;
-    private JList<Icon> player3CardsJList;
-    private JList<Icon> player4CardsJList;
-    private JList<Icon> dealersCardsJList;
-    private JLabel dealersPointsLabel;
     private JPanel otherPanel;
+    private JPanel leftPanel;
     private JPanel dealerPanel;
+    private DealerPanel dealerMainPanel;
     private volatile JLabel countdownLabel;
     private JPanel playersPanel;
+    private PlayersMainPanel playersMainPanel;
     private JPanel gameButtonsPanel;
     private JButton backToMainMenuButton;
     private JButton drawButton;
     private JButton passButton;
     private JPanel backToMainMenuPanel;
-    private JLabel player2PointsLabel;
-    private JLabel player3PointsLabel;
-    private JLabel player4PointsLabel;
-    private JLabel player1PointsLabel;
-    private JPanel dealersPointsPanel;
     private JPanel countdownPanel;
 
-    private DefaultListModel<Icon> dealersListModel;
-    private DefaultListModel<Icon> player1ListModel;
-    private DefaultListModel<Icon> player2ListModel;
-    private DefaultListModel<Icon> player3ListModel;
-    private DefaultListModel<Icon> player4ListModel;
     private ApplicationData applicationData;
     private GameManager gameManager;
     private Dealer dealer;
     private List<Player> players;
     private volatile AtomicInteger countdown;
-    private Thread countdownGuiThread;
+    private Thread guiThread;
 
     public HalfCasinoGameWindow() {
         super("Blackjack");
         setContentPane(this.mainPanel);
+        setPreferredSize(new Dimension(800, 660));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
         setVisible(true);
@@ -73,25 +52,46 @@ public class HalfCasinoGameWindow extends JFrame implements GameWindow {
         drawButton.addActionListener(e -> gameManager.getTurnChoice().draw());
         passButton.addActionListener(e -> gameManager.getTurnChoice().pass());
 
-        configureJLists();
 
         this.applicationData = ApplicationData.getInstance();
 
         gameManager = new GameManager(this);
-        initializeCountdownGuiThread();
+        initializeGuiThread();
 
         gameManager.start();
-        countdownGuiThread.start();
+        guiThread.start();
     }
 
-    private void initializeCountdownGuiThread() {
-        countdownGuiThread = new Thread(() -> {
+    private void initializeGuiThread() {
+        guiThread = new Thread(() -> {
             while(true) {
                 try {
                     if (countdown != null) {
                         countdownLabel.setText(String.valueOf(countdown));
                     } else {
                         countdownLabel.setText("");
+                    }
+
+                    if (gameManager.isHumanTurn()) {
+                        drawButton.setVisible(true);
+                        passButton.setVisible(true);
+                    } else {
+                        drawButton.setVisible(false);
+                        passButton.setVisible(false);
+                    }
+
+                   // if (!gameManager.isEnded()) {
+                        playersMainPanel.updatePanel(gameManager.getIndexOfCurrentPlayer());
+                    //}
+
+                    if (gameManager.isDealerTurn()) {
+                        dealerMainPanel.showHiddenCard();
+                        playersMainPanel.hideBuggyArrowForFirstPlayer();
+                        if (dealer.isEnded()) {
+                            dealerMainPanel.hideArrow();
+                        } else {
+                            dealerMainPanel.showArrow();
+                        }
                     }
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -101,37 +101,8 @@ public class HalfCasinoGameWindow extends JFrame implements GameWindow {
         });
     }
 
-    private void configureJLists() {
-        dealersCardsJList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-        player1CardsJList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-        player2CardsJList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-        player3CardsJList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-        player4CardsJList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-
-        dealersCardsJList.setVisibleRowCount(1);
-        player1CardsJList.setVisibleRowCount(1);
-        player2CardsJList.setVisibleRowCount(1);
-        player3CardsJList.setVisibleRowCount(1);
-        player4CardsJList.setVisibleRowCount(1);
-
-        dealersListModel = new DefaultListModel<>();
-        player1ListModel = new DefaultListModel<>();
-        player2ListModel = new DefaultListModel<>();
-        player3ListModel = new DefaultListModel<>();
-        player4ListModel = new DefaultListModel<>();
-
-        dealersCardsJList.setModel(dealersListModel);
-        player1CardsJList.setModel(player1ListModel);
-        player2CardsJList.setModel(player2ListModel);
-        player3CardsJList.setModel(player3ListModel);
-        player4CardsJList.setModel(player4ListModel);
-    }
-
     public void showBeginningResults() {
-        //TODO show beginning results after game started in backend
         takeReferences();
-        showBeginningDealer();
-        showPlayers();
     }
 
     private void takeReferences() {
@@ -140,96 +111,340 @@ public class HalfCasinoGameWindow extends JFrame implements GameWindow {
         this.countdown = gameManager.getCountdown();
     }
 
-    private void showBeginningDealer() {
-        showDealersHiddenCard();
-        showDealersVisibleCard();
-        dealersPointsLabel.setText("Dealer's points: " + dealer.getVisibleCard().getValue());
-    }
 
-    private void showDealersHiddenCard() {
-        String path = applicationData.getCardDisplayer().getBaseDirectory() + "\\reverse.jpg";
-        hiddenCardLabel.setIcon(new ImageIcon(path));
-        hiddenCardLabel.setText("Hidden Card");
-    }
-
-    private void showDealersVisibleCard() {
-        String path = String.valueOf(applicationData.getCardDisplayer().getFilePath(dealer.getVisibleCard()));
-        visibleCardLabel.setIcon(new ImageIcon(path));
-        visibleCardLabel.setText("Visible Card");
-    }
-
-    private void showPlayers() {
-        adjustAmountOfPlayerPanels();
-        showBeginningPlayersCards();
-    }
-
-    private void adjustAmountOfPlayerPanels() {
-        player4Panel.setVisible(players.size() >= 4);
-        player3Panel.setVisible(players.size() >= 3);
-        player2Panel.setVisible(players.size() >= 2);
-    }
-
-    private void showBeginningPlayersCards() {
-        player1Panel.setBorder(BorderFactory.createTitledBorder(player1Panel.getBorder(), players.get(0).getNick()));
-        player1PointsLabel.setText("Points: " + players.get(0).getTotalPoints());
-        player1TurnMarkerLabel.setIcon(new ImageIcon(applicationData.getCardDisplayer().getBaseDirectory() + "\\marker.jpg"));
-        addCardsToJList(players.get(0),  player1ListModel);
-        if (player2Panel.isVisible()) {
-            player2Panel.setBorder(BorderFactory.createTitledBorder(player1Panel.getBorder(), players.get(1).getNick()));
-            player2PointsLabel.setText("Points: " + players.get(1).getTotalPoints());
-            addCardsToJList(players.get(1),  player2ListModel);
-        }
-        if (player3Panel.isVisible()) {
-            player3Panel.setBorder(BorderFactory.createTitledBorder(player1Panel.getBorder(), players.get(2).getNick()));
-            player3PointsLabel.setText("Points: " + players.get(2).getTotalPoints());
-            addCardsToJList(players.get(2),  player3ListModel);
-        }
-        if (player4Panel.isVisible()) {
-            player4Panel.setBorder(BorderFactory.createTitledBorder(player1Panel.getBorder(), players.get(3).getNick()));
-            player4PointsLabel.setText("Points: " + players.get(3).getTotalPoints());
-            addCardsToJList(players.get(3),  player4ListModel);
-        }
-    }
-
-    private void addCardsToJList(Player player, DefaultListModel<Icon> listModel) {
-        listModel.clear();
-        for (int i = 0; i < player.getCards().size(); i++) {
-            Card card = player.getCards().get(i);
-            String path = String.valueOf(applicationData.getCardDisplayer().getFilePath(card));
-            Icon cardIcon = new ImageIcon(path);
-            listModel.addElement(cardIcon);
-        }
-    }
-
-    public void showTurnResults() {
-        //TODO show turn results after turn ends
-        //TODO bots should move and be displayed automatically
-        dealersPointsLabel.setText(String.valueOf(dealer.getTotalPoints()));
-        addCardsToJList(dealer, dealersListModel);
-        player1PointsLabel.setText("Points: " + players.get(0).getTotalPoints());
-        addCardsToJList(players.get(0), player1ListModel);
-        if (player2Panel.isVisible()) {
-            player2PointsLabel.setText("Points: " + players.get(1).getTotalPoints());
-            addCardsToJList(players.get(1), player2ListModel);
-        }
-        if (player3Panel.isVisible()) {
-            player3PointsLabel.setText("Points: " + players.get(2).getTotalPoints());
-            addCardsToJList(players.get(2), player3ListModel);
-        }
-        if (player4Panel.isVisible()) {
-            player4PointsLabel.setText("Points: " + players.get(3).getTotalPoints());
-            addCardsToJList(players.get(3), player4ListModel);
-        }
-    }
+    public void showTurnResults() {}
 
     public void showGameResults() {
-        //TODO show game results after game ends
-        //TODO show Dealers moves
-        //TODO show next window with game summary
-        //TODO close this window
+        // TODO: check if game results is fine +
+        // should be here: players.add(dealer) or GameSummaryWindow with constructor (Dealer, List<Players>)
+        ApplicationData.reset();
+        new GameSummaryWindow(players);
+        dispose();
     }
 
     private void createUIComponents() {
-        // TODO: place custom component creation code here
+        applicationData = ApplicationData.getInstance();
+        playersMainPanel = new PlayersMainPanel(applicationData.getGameConfig().getPlayers());
+        playersPanel = playersMainPanel;
+        dealerMainPanel = new DealerPanel(
+                applicationData.getGameConfig().getDealer(),
+                applicationData.getCardDisplayer()
+        );
+        dealerPanel = dealerMainPanel;
+    }
+
+
+
+    // -----------------------------------------------------------
+    // -----------------------------------------------------------
+    // -----------------------------------------------------------
+
+    class PlayersMainPanel extends JPanel{
+        private List<Player> players;
+        private GridBagConstraints constraints;
+        private int displayedIndexOfPlayer = -1;
+        private List <PlayerPanel> playerPanels;
+
+        public PlayersMainPanel(List<Player> players) {
+            super(new GridBagLayout());
+            setBackground(Color.WHITE);
+            this.players = players;
+
+            constraints = new GridBagConstraints();
+            constraints.anchor = GridBagConstraints.NORTHWEST;
+
+            constraints.gridx = 0;
+            constraints.gridy = 0;
+
+            constraints.weightx = 1;
+            constraints.weighty = 1;
+
+            createPlayersPanels();
+        }
+
+        private void createPlayersPanels() {
+            playerPanels = new ArrayList<>();
+            for (Player player: players) {
+                PlayerPanel playerPanel = new PlayerPanel(player, applicationData.getCardDisplayer());
+                playerPanels.add(playerPanel);
+                add(playerPanel, constraints);
+                constraints.gridy++;
+            }
+        }
+
+       public void updatePanel(int indexOfCurrentPlayer){
+            if (indexOfCurrentPlayer != displayedIndexOfPlayer) {
+                if (displayedIndexOfPlayer >= 0) {
+                    playerPanels.get(displayedIndexOfPlayer).changeArrowState();
+                }
+                playerPanels.get(indexOfCurrentPlayer).changeArrowState();
+                displayedIndexOfPlayer = indexOfCurrentPlayer;
+            }
+       }
+
+       public void hideBuggyArrowForFirstPlayer() {
+            playerPanels.get(0).hideArrow();
+       }
+    }
+
+    private class PlayerPanel extends JPanel {
+        private Player player;
+        private CardPanel cardPanel;
+        private InformationPanel infoPanel;
+
+        private Thread guiRefresher;
+
+        public PlayerPanel(Player player, CardDisplayer cardDisplayer) {
+            super(new GridBagLayout());
+
+            this.player = player;
+
+            setBackground(Color.WHITE);
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.anchor = GridBagConstraints.WEST;
+            constraints.insets = new Insets(10, 10, 10, 10);
+
+            constraints.gridx = 0;
+            constraints.gridy = 0;
+
+            constraints.weightx = 1;
+            constraints.weighty = 1;
+
+            infoPanel = new InformationPanel(player);
+            add(infoPanel,  constraints);
+            constraints.gridy = 1;
+
+            cardPanel = new CardPanel(player, cardDisplayer);
+            add(cardPanel, constraints);
+
+            initThreadAndStart();
+        }
+        private void initThreadAndStart(){
+            Runnable refreshTask = () -> {
+                while (!player.isEnded()) {
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    cardPanel.update();
+                    infoPanel.update();
+                }
+            };
+
+            guiRefresher = new Thread(refreshTask);
+            guiRefresher.start();
+        }
+
+        public void changeArrowState(){
+            if (cardPanel.getArrowLabel().isVisible()) {
+                cardPanel.getArrowLabel().setVisible(false);
+            } else {
+                cardPanel.getArrowLabel().setVisible(true);
+            }
+            if (player.isEnded()) {
+                cardPanel.getArrowLabel().setVisible(false);
+            }
+        }
+
+        public void hideArrow(){
+            cardPanel.getArrowLabel().setVisible(false);
+        }
+    }
+
+
+
+    private class CardPanel extends JPanel {
+        private GridBagConstraints constraints;
+        private Player player;
+        private int numOfDisplayedCards;
+        private CardDisplayer cardDisplayer;
+
+        private JLabel arrowLabel;
+
+        public CardPanel(Player player, CardDisplayer cardDisplayer) {
+            super(new GridBagLayout());
+            setBackground(Color.WHITE);
+
+            this.player = player;
+            this.cardDisplayer = cardDisplayer;
+            numOfDisplayedCards = player.getCards().size();
+
+            constraints = new GridBagConstraints();
+            constraints.anchor = GridBagConstraints.WEST;
+            constraints.insets = new Insets(0, 0, 0, 10);
+
+            constraints.gridx = 0;
+            constraints.gridy = 0;
+
+            String path = Path.of("", "resources", "cardSkins", "marker2.png").toAbsolutePath().toString();
+            arrowLabel = new JLabel(new ImageIcon(path));
+            arrowLabel.setVisible(false);
+            add(arrowLabel, constraints);
+
+            constraints.gridx = 1;
+        }
+
+
+        public void update() {
+            if (player.getCards().size() > numOfDisplayedCards) {
+                int actualNumOfCards = player.getCards().size();
+
+                for (int i = numOfDisplayedCards; i < actualNumOfCards;i++) {
+                    addCard(cardDisplayer.getFilePath(player.getCards().get(i)).toString());
+                }
+
+                numOfDisplayedCards = actualNumOfCards;
+            }
+        }
+
+        public void addCard(String path) {
+            ImageIcon icon = new ImageIcon(path);
+            JLabel label = new JLabel(icon);
+            add(label, constraints);
+            constraints.gridx++;
+            updateUI();
+        }
+
+        public JLabel getArrowLabel() {
+            return arrowLabel;
+        }
+    }
+
+    private class InformationPanel extends JPanel {
+        protected GridBagConstraints constraints;
+        protected Player player;
+        private int displayedTime = 0;
+        private JLabel pointsLabel;
+        private JLabel statusLabel;
+
+        public InformationPanel(Player player) {
+            super(new GridBagLayout());
+            setBackground(Color.WHITE);
+
+            this.player = player;
+
+            constraints = new GridBagConstraints();
+            constraints.anchor = GridBagConstraints.WEST;
+            constraints.insets = new Insets(0,0,0,15);
+
+            constraints.gridx = 0;
+            constraints.gridy = 0;
+
+            constraints.weightx = 1;
+            constraints.weighty = 1;
+
+            JLabel nick = new JLabel(player.getGameNick());
+            add(nick, constraints);
+
+            pointsLabel = new JLabel("Points: " + displayedTime);
+            constraints.gridx = 1;
+            add(pointsLabel, constraints);
+
+            statusLabel = new JLabel("Status: Passed");
+            statusLabel.setVisible(false);
+            constraints.gridx = 2;
+            add(statusLabel, constraints);
+
+            constraints.gridx = 0;
+            constraints.gridy = 1;
+        }
+
+
+        public void update() {
+            if (player.getTotalPoints() > displayedTime) {
+                displayedTime = player.getTotalPoints();
+                pointsLabel.setText("Points: " + displayedTime);
+            }
+            if (player.isEnded()) {
+                statusLabel.setVisible(true);
+            }
+        }
+    }
+
+    // Dealer ------------------------------------------
+
+    private class DealerPanel extends JPanel {
+        private Dealer dealer;
+        private CardPanel cardPanel;
+        private InformationPanel infoPanel;
+        private JPanel specialCardsPanel;
+        private JLabel hiddenCardLabel;
+        private ImageIcon hiddenCardIcon;
+
+        private Thread guiRefresher;
+
+        public DealerPanel(Player player, CardDisplayer cardDisplayer) {
+            super(new GridBagLayout());
+
+            dealer = (Dealer)player;
+
+            setBackground(Color.WHITE);
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.anchor = GridBagConstraints.WEST;
+            constraints.insets = new Insets(10, 10, 10, 10);
+
+            constraints.gridx = 0;
+            constraints.gridy = 0;
+
+            constraints.weightx = 1;
+            constraints.weighty = 1;
+            infoPanel = new InformationPanel(dealer);
+            add(infoPanel,  constraints);
+            constraints.gridy = 1;
+
+            specialCardsPanel = new JPanel();
+            specialCardsPanel.setBackground(Color.WHITE);
+
+            hiddenCardIcon = new ImageIcon(
+                    cardDisplayer.getFilePath(dealer.getHiddenCard()).toString());
+            String path = Path.of("", "resources", "cardSkins", "reverse.jpg").toAbsolutePath().toString();
+            hiddenCardLabel = new JLabel(new ImageIcon(path));
+            specialCardsPanel.add(hiddenCardLabel);
+
+            JLabel visibleCardLabel = new JLabel(new ImageIcon(
+                    cardDisplayer.getFilePath(dealer.getVisibleCard()).toString()));
+            specialCardsPanel.add(visibleCardLabel);
+
+            add(specialCardsPanel, constraints);
+
+
+            constraints.gridx = 0;
+            constraints.gridy = 2;
+            cardPanel = new CardPanel(dealer, cardDisplayer);
+            add(cardPanel, constraints);
+
+            initThreadAndStart();
+        }
+
+        private void initThreadAndStart(){
+            Runnable refreshTask = () -> {
+                while (!dealer.isEnded()) {
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    cardPanel.update();
+                    infoPanel.update();
+                }
+            };
+
+            guiRefresher = new Thread(refreshTask);
+            guiRefresher.start();
+        }
+
+
+        public void showArrow(){
+            cardPanel.getArrowLabel().setVisible(true);
+        }
+
+        public void hideArrow(){
+            cardPanel.getArrowLabel().setVisible(false);
+        }
+
+        public void showHiddenCard(){
+            hiddenCardLabel.setIcon(hiddenCardIcon);
+        }
     }
 }
