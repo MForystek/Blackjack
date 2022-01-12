@@ -70,7 +70,7 @@ public class Player implements Comparable<Object> {
         if (!(anotherPlayer instanceof Player)) {
             throw new ClassCastException("A Player object expected.");
         }
-        return this.getTotalPoints() - ((Player) anotherPlayer).getTotalPoints();
+        return ((Player)anotherPlayer).getTotalPoints() - this.getTotalPoints();
     }
 
 
