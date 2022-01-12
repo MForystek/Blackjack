@@ -4,7 +4,9 @@ import applicationLogic.ApplicationData;
 import applicationLogic.Statistics;
 import database.Database;
 import gameLogic.cards.Card;
+import gameLogic.cards.CardValues;
 import gameLogic.cards.Decks;
+import gameLogic.players.AI;
 import gameLogic.players.Dealer;
 import gameLogic.players.Player;
 
@@ -17,6 +19,8 @@ import static gameLogic.players.Player.MAX_ALLOWED_POINTS_THRESHOLD;
 
 public class HalfCasinoGame implements Game, TurnChoice {
     private boolean isDebug = false;
+    private boolean isDealerTurn = false;
+    private boolean isHumanTurn = false;
 
     private GameConfig gameConfig;
 
@@ -30,6 +34,7 @@ public class HalfCasinoGame implements Game, TurnChoice {
     private Player currentPlayer;
     private int numberOfPlayers;
     private Runnable countdownAndAdjusterRun;
+    private Runnable botCountdownRun;
     private Thread countdownAndAdjuster;
     private Decks decks;
     private volatile boolean isReadyToBePlayed;
@@ -58,6 +63,7 @@ public class HalfCasinoGame implements Game, TurnChoice {
         //order of operations matter
         initializePlayers();
         initializeCountdown();
+        initializeCountdownForBots();
         isReadyToBePlayed = true;
     }
 
@@ -85,11 +91,25 @@ public class HalfCasinoGame implements Game, TurnChoice {
         };
     }
 
+    private void initializeCountdownForBots() {
+        botCountdownRun = () -> {
+            try {
+                countdown.set(gameMode.getTimeForMove());
+                while (countdown.intValue() >= gameMode.getTimeForMove() - 2) {
+                    Thread.sleep(1000);
+                    countdown.decrementAndGet();
+                }
+                if (isDebug) {
+                    System.out.println("Bot countdown stop");
+                }
+            } catch (InterruptedException e) {
+                adjustIndexOfTheCurrentPlayer();
+            }
+        };
+    }
+
     public void startPlaying() {
         gameDurationInMilliseconds = System.currentTimeMillis();
-
-        dealer.setHiddenCard(decks.takeNextCard());
-        dealer.addCard(decks.takeNextCard());
 
         players.forEach(player -> {
             player.addCard(decks.takeNextCard());
@@ -101,6 +121,7 @@ public class HalfCasinoGame implements Game, TurnChoice {
         if (!players.stream().allMatch(Player::isEnded)) {
             players.stream().distinct().forEach(player -> makePlayerTurn());
         } else {
+            isDealerTurn = true;
             makeDealerMoves();
             isEnded = true;
         }
@@ -124,12 +145,36 @@ public class HalfCasinoGame implements Game, TurnChoice {
             if (isDebug) {
                 System.out.println("Countdown start");
             }
-            countdownAndAdjuster = new Thread(countdownAndAdjusterRun);
-            countdownAndAdjuster.start();
-            countdownAndAdjuster.join();
+
+            if(currentPlayer instanceof AI) {
+                countdownAndAdjuster = new Thread(botCountdownRun);
+                countdownAndAdjuster.start();
+                countdownAndAdjuster.join();
+
+                if (currentPlayer.wantToDrawCard()) {
+                    try {
+                        Card nextCard = decks.takeNextCard();
+                        currentPlayer.addCard(nextCard);
+                    } catch (EmptyStackException e) {
+                        currentPlayer.setEnded();
+                    }
+                } else {
+                    currentPlayer.setEnded();
+                }
+
+                adjustIndexOfTheCurrentPlayer();
+            } else {
+                isHumanTurn = true;
+                countdownAndAdjuster = new Thread(countdownAndAdjusterRun);
+                countdownAndAdjuster.start();
+                countdownAndAdjuster.join();
+                isHumanTurn = false;
+            }
+
             if (isDebug) {
                 System.out.println("End of turn");
             }
+
         } catch (InterruptedException ignored) {}
     }
 
@@ -168,6 +213,7 @@ public class HalfCasinoGame implements Game, TurnChoice {
     }
 
     private void adjustIndexOfTheCurrentPlayer() {
+        dropAceValueIfToMuchPoints();
         if (indexOfCurrentPlayer < numberOfPlayers - 1) {
             indexOfCurrentPlayer++;
         } else {
@@ -175,10 +221,32 @@ public class HalfCasinoGame implements Game, TurnChoice {
         }
     }
 
+    public void dropAceValueIfToMuchPoints() {
+        if (currentPlayer.getTotalPoints() > MAX_ALLOWED_POINTS_THRESHOLD) {
+            for (Card card: currentPlayer.getCards()) {
+                if (card.getCardValue().equals(CardValues.ACE11)) {
+                    card.changeAceValue();
+                    break;
+                }
+            }
+        }
+    }
+
     private void makeDealerMoves() {
-        while (!dealer.isEnded() && dealer.wantToDrawCard()) {
+        while (!dealer.isEnded()) {
             try {
-                dealer.addCard(decks.takeNextCard());
+                countdownAndAdjuster = new Thread(botCountdownRun);
+                countdownAndAdjuster.start();
+                countdownAndAdjuster.join();
+
+                if (dealer.wantToDrawCard()) {
+                    dealer.addCard(decks.takeNextCard());
+                } else {
+                    dealer.setEnded();
+                }
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             } catch (EmptyStackException e) {
                 dealer.setEnded();
             }
@@ -257,5 +325,17 @@ public class HalfCasinoGame implements Game, TurnChoice {
             return gameDurationInMilliseconds;
         }
         return 0;
+    }
+
+    public int getIndexOfCurrentPlayer() {
+        return indexOfCurrentPlayer;
+    }
+
+    public boolean isDealerTurn() {
+        return isDealerTurn;
+    }
+
+    public boolean isHumanTurn() {
+        return isHumanTurn;
     }
 }
