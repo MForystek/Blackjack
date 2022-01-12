@@ -27,7 +27,7 @@ public class GameManager extends Thread {
     public void run() {
         game.startPlaying();
         gameWindow.showBeginningResults();
-        while(!game.isEnded()) {
+        while (!game.isEnded()) {
             game.makeTurn();
         }
         game.endGame();

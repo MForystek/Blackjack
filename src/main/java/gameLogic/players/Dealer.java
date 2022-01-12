@@ -7,6 +7,7 @@ public class Dealer extends Player implements AI {
     private Card hiddenCard;
     private Card visibleCard;
     private boolean isEnded;
+    private boolean isDealerTurns;
 
     public Dealer(Card visibleCard, Card hiddenCard) {
         super("Dealer");
@@ -37,7 +38,10 @@ public class Dealer extends Player implements AI {
         for (Card card : getCards()) {
             value = value + card.getValue();
         }
-        return value + hiddenCard.getValue() + visibleCard.getValue();
+        if(isDealerTurns) {
+            return value + hiddenCard.getValue() + visibleCard.getValue();
+        }
+        return value + visibleCard.getValue();
     }
 
     @Override
@@ -87,5 +91,13 @@ public class Dealer extends Player implements AI {
 
     public String getGameNick() {
         return this.getNick();
+    }
+
+    public boolean isDealerTurns() {
+        return isDealerTurns;
+    }
+
+    public void setDealerTurns(boolean dealerTurns) {
+        isDealerTurns = dealerTurns;
     }
 }
