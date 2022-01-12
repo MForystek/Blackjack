@@ -40,9 +40,9 @@ public class GameSummaryWindow extends JFrame {
     private void printOutPlayers(List<Player> players) {
         for (Player player : players.stream().sorted().toList()) {
             if (player.isWinner()) {
-                winners.append(player.getNick() + ": " + player.getTotalPoints() + "pts\n");
+                winners.append(player.getGameNick() + ": " + player.getTotalPoints() + "pts\n");
             } else {
-                losers.append(player.getNick() + ": " + player.getTotalPoints() + "pts\n");
+                losers.append(player.getGameNick() + ": " + player.getTotalPoints() + "pts\n");
             }
         }
     }
