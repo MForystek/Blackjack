@@ -2,7 +2,6 @@ package gui;
 
 import applicationLogic.Statistics;
 import database.Database;
-import database.SqliteDB;
 import gameLogic.cards.CardValues;
 
 import javax.swing.*;
