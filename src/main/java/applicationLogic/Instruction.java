@@ -7,8 +7,9 @@ public class Instruction {
                 - 2-9 -> 2-9,
                 - 10/Jack/Queen/King -> 10,
                 - Ace -> 11/1 (which is better for the player).
-            Available amount of players 1-4.
-            Available amount of decks 1-8.
+            Available amount of players 2-4 in Human vs Human.
+            Available amount of players 1-4 in other game modes (dealer is counted as AI)
+            Available amount of decks 1-3.
             
             Preparations:
             Dealer draws 2 cards. First is hidden the second one is visible to everyone.
