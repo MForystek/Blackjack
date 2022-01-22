@@ -64,7 +64,7 @@ public class StatisticsWindow extends JFrame{
                 db.closeConnection();
                 textArea.append(
                         nick + "\t" +
-                                statistics.getWinRate() + "%\t" +
+                                statistics.getWinRate() * 100 + "%\t" +
                                 statistics.getNumberOfGames() + "\t" +
                                 Math.round(statistics.getGameTime()/36f)/100f + "h\t" +
                                 statistics.getCardOccurrence(CardValues.TWO) + "\t" +

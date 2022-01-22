@@ -233,6 +233,7 @@ public class HalfCasinoGame implements Game, TurnChoice {
     }
 
     private void makeDealerMoves() {
+        dealer.setDealerTurns(true);
         while (!dealer.isEnded()) {
             try {
                 countdownAndAdjuster = new Thread(botCountdownRun);
@@ -259,7 +260,9 @@ public class HalfCasinoGame implements Game, TurnChoice {
             Statistics tmp = player.getStatistics();
             tmp.updateStatistics(player.isWinner(), player.getCards(), gameDurationInMilliseconds/1000);
             try {
+                database.openConnection();
                 database.setStatistics(player.getNick(), tmp);
+                database.closeConnection();
             } catch (SQLException e){
                 e.printStackTrace();
             }

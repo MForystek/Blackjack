@@ -95,7 +95,7 @@ public class SqliteDB implements Database {
                 register("jack", "frost");
                 tmp.setCardHistory(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
                 tmp.setGameTime(1234);
-                tmp.setWinRate(99.99f);
+                tmp.setWinRate(0.9f);
                 tmp.setNumberOfGames(465);
                 setStatistics("jack", tmp);
             }
@@ -104,7 +104,7 @@ public class SqliteDB implements Database {
                 register("tony", "stark");
                 tmp.setCardHistory(10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10);
                 tmp.setGameTime(9999);
-                tmp.setWinRate(100f);
+                tmp.setWinRate(1f);
                 tmp.setNumberOfGames(42);
                 setStatistics("tony", tmp);
             }
@@ -113,7 +113,7 @@ public class SqliteDB implements Database {
                 register("pope", "jp2");
                 tmp.setCardHistory(2, 22, 222, 2222, 22222, 2, 22, 2222, 222, 2, 22, 22, 2);
                 tmp.setGameTime(2137);
-                tmp.setWinRate(21.37f);
+                tmp.setWinRate(0.2137f);
                 tmp.setNumberOfGames(7312);
                 setStatistics("pope", tmp);
             }
@@ -282,7 +282,7 @@ public class SqliteDB implements Database {
                     SqliteDB.kingNo + " = " + statistics.getCardOccurrence(CardValues.KING) + ", " +
                     SqliteDB.aceNo + " = " + (statistics.getCardOccurrence(CardValues.ACE11) +
                         statistics.getCardOccurrence(CardValues.ACE1)) +
-                    " WHERE " + SqliteDB.nick + " = \"" + nick + "\";"
+                    " WHERE " + SqliteDB.nick + " = '" + nick + "';"
             );
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());

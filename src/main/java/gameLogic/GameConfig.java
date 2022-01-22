@@ -73,6 +73,9 @@ public class GameConfig {
                 if (numOfAis + numOfHumans == 0) {
                     return "You must select at least one player";
                 }
+                if (numOfAis == 0 || numOfHumans == 0) {
+                    return "You must select at least one player and at least one AI";
+                }
             }
             break;
             case "AIs": {

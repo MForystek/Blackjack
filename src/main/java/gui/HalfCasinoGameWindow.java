@@ -45,9 +45,10 @@ public class HalfCasinoGameWindow extends JFrame implements GameWindow {
 
         backToMainMenuButton.addActionListener(e -> {
             ApplicationData.reset();
+            gameManager.stop();
+            guiThread.stop();
             new MainWindow();
             dispose();
-            //TODO ensure that everything is closing in the right way
         });
         drawButton.addActionListener(e -> gameManager.getTurnChoice().draw());
         passButton.addActionListener(e -> gameManager.getTurnChoice().pass());
@@ -115,9 +116,8 @@ public class HalfCasinoGameWindow extends JFrame implements GameWindow {
     public void showTurnResults() {}
 
     public void showGameResults() {
-        // TODO: check if game results is fine +
-        // should be here: players.add(dealer) or GameSummaryWindow with constructor (Dealer, List<Players>)
         ApplicationData.reset();
+        JOptionPane.showMessageDialog(mainPanel, "Game is ended");
         new GameSummaryWindow(players);
         dispose();
     }
