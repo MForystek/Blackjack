@@ -24,11 +24,9 @@ class CardDisplayerTest {
         assertEquals(genPath(CardDisplayer.CARD_SKIN_V_1,"SA"),
                 cardDisplayer.getFilePath(new Card(CardColors.SPADES, CardValues.ACE1)));
 
-        cardDisplayer.changeCardsSkins();
-
-        assertEquals(genPath(CardDisplayer.CARD_SKIN_V_2,"H8"),
+        assertEquals(genPath(CardDisplayer.CARD_SKIN_V_1,"H8"),
                 cardDisplayer.getFilePath(new Card(CardColors.HEARTS, CardValues.EIGHT)));
-        assertEquals(genPath(CardDisplayer.CARD_SKIN_V_2,"DK"),
+        assertEquals(genPath(CardDisplayer.CARD_SKIN_V_1,"DK"),
                 cardDisplayer.getFilePath(new Card(CardColors.DIAMONDS, CardValues.KING)));
 
     }
@@ -39,17 +37,6 @@ class CardDisplayerTest {
     }
 
 
-    @Test
-    void changeCardsSkins() {
-        assertEquals(CardDisplayer.CARD_SKIN_V_1,cardDisplayer.getCardSkinDirectory());
-
-        cardDisplayer.changeCardsSkins();
-        assertEquals(CardDisplayer.CARD_SKIN_V_2,cardDisplayer.getCardSkinDirectory());
-
-        cardDisplayer.changeCardsSkins();
-        assertEquals(CardDisplayer.CARD_SKIN_V_1,cardDisplayer.getCardSkinDirectory());
-
-    }
 
     @Test
     void setCardSkinDirectory() {

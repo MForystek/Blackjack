@@ -42,10 +42,10 @@ public class Player implements Comparable<Object> {
         boolean hasAce = false;
         boolean hasTen = false;
         for (Card card : cards) {
-            switch (card.getCardValue()){
-                case ACE11, ACE1: hasAce = true;
+            switch (card.getCardValue().toString()){
+                case "A": hasAce = true;
                     break;
-                case KING, QUEEN, JACK, TEN: hasTen = true;
+                case "10": hasTen = true;
                     break;
             }
             if(hasAce && hasTen) return true;
