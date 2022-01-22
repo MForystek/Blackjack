@@ -21,7 +21,7 @@ public class StatisticsWindow extends JFrame{
         setContentPane(this.mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
-        setSize(1500,500);
+        setSize(1300,500);
         setVisible(true);
         textArea.setEditable(false);
         Scrollbar scrollbar = new Scrollbar();
@@ -61,10 +61,14 @@ public class StatisticsWindow extends JFrame{
             try {
                 db.openConnection();
                 Statistics statistics = db.getStatistics(nick);
+                String winrate = (statistics.getWinRate() * 100) + "%";
+                if (nick.equals("Dealer")) {
+                    winrate = "NA";
+                }
                 db.closeConnection();
                 textArea.append(
                         nick + "\t" +
-                                statistics.getWinRate() * 100 + "%\t" +
+                                winrate + "\t" +
                                 statistics.getNumberOfGames() + "\t" +
                                 Math.round(statistics.getGameTime()/36f)/100f + "h\t" +
                                 statistics.getCardOccurrence(CardValues.TWO) + "\t" +

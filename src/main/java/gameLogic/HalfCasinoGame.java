@@ -95,7 +95,7 @@ public class HalfCasinoGame implements Game, TurnChoice {
         botCountdownRun = () -> {
             try {
                 countdown.set(gameMode.getTimeForMove());
-                while (countdown.intValue() >= gameMode.getTimeForMove() - 2) {
+                while (countdown.intValue() >= gameMode.getTimeForMove() - 1) {
                     Thread.sleep(1000);
                     countdown.decrementAndGet();
                 }
@@ -257,16 +257,28 @@ public class HalfCasinoGame implements Game, TurnChoice {
     public void endGame() {
         setWinners();
         for (Player player : players) {
-            Statistics tmp = player.getStatistics();
-            tmp.updateStatistics(player.isWinner(), player.getCards(), gameDurationInMilliseconds/1000);
             try {
                 database.openConnection();
+                Statistics tmp = database.getStatistics(player.getNick());
+                tmp.updateStatistics(player.isWinner(), player.getCards(), gameDurationInMilliseconds/1000);
                 database.setStatistics(player.getNick(), tmp);
                 database.closeConnection();
             } catch (SQLException e){
                 e.printStackTrace();
             }
         }
+        try {
+            database.openConnection();
+            Statistics tmp = database.getStatistics(dealer.getNick());
+            dealer.addCard(dealer.getVisibleCard());
+            dealer.addCard(dealer.getHiddenCard());
+            tmp.updateStatistics(dealer.isWinner(), dealer.getCards(), gameDurationInMilliseconds/1000);
+            database.setStatistics(dealer.getNick(), tmp);
+            database.closeConnection();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
     }
 
     private void setWinners() {

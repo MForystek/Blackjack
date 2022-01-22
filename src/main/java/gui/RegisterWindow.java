@@ -70,6 +70,11 @@ public class RegisterWindow extends JFrame {
             return;
         }
 
+        if (nickText.getText().length() > 10) {
+            JOptionPane.showMessageDialog(mainPanel, "Name is too long");
+            return;
+        }
+
         if (passwordField1.getPassword().length == 0) {
             JOptionPane.showMessageDialog(mainPanel, "You must enter a password.");
             return;

@@ -5,3 +5,7 @@ target
 src/main/resources/SkinDeck.png
 src/test/java/H_others
 skins/
+out/
+src/main/java/META-INF/
+src/main/resources/
+

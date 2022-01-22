@@ -13,7 +13,7 @@ import java.util.List;
 
 public class GameConfig {
     private static final int MAX_NUM_OF_PLAYERS = 4;
-    private static final int MAX_NUM_OF_DECKS = 8;
+    private static final int MAX_NUM_OF_DECKS = 3;
 
     private Database database;
 
@@ -56,13 +56,13 @@ public class GameConfig {
         }
 
         if (numOfDecks < 1 || numOfDecks > MAX_NUM_OF_DECKS) {
-            return "Amount of Decks must be integer value between 1 and 8";
+            return "Amount of Decks must be integer value between 1 and " + MAX_NUM_OF_DECKS;
         }
 
         switch (gameType) {
             case "Humans": {
-                if (numOfHumans == 0) {
-                    return "You must select at least one player";
+                if (numOfHumans < 2) {
+                    return "You must select at least two players";
                 }
                 if (numOfAis > 0) {
                     return "AIs can't play in selected game mode";
@@ -109,9 +109,6 @@ public class GameConfig {
                 database.openConnection();
                 if (database.login(username, password)) {
                     User user = new User(username, password);
-                    Statistics statistics = database.getStatistics(username);
-
-                    user.setStatistics(statistics);
                     addPlayer(user);
                     database.closeConnection();
                     return null;
