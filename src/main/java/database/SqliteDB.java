@@ -141,6 +141,7 @@ public class SqliteDB implements Database {
     }
 
     private boolean isNickAvailable(String nick) {
+        nick = nick.trim();
         try (Statement statement = connection.createStatement()){
             ResultSet resultSet = statement.executeQuery("SELECT " + SqliteDB.nick + " FROM " + SqliteDB.users + " WHERE " + SqliteDB.nick + " = '" + nick + "'");
             return !resultSet.next();
@@ -151,6 +152,7 @@ public class SqliteDB implements Database {
     }
 
     public void register(String nick, String password) throws SQLException {
+        nick = nick.trim();
         if (!isNickAvailable(nick)) {
             throw new SQLException("Error: user with nick " + nick + " already exists");
         }
@@ -164,6 +166,7 @@ public class SqliteDB implements Database {
     }
 
     public boolean login(String nick, String password) throws SQLException {
+        nick = nick.trim();
         if (isNickAvailable(nick)) {
             throw new SQLException("No such user: " + nick);
         }
@@ -171,6 +174,7 @@ public class SqliteDB implements Database {
     }
 
     public void deleteUser(String nick) throws SQLException{
+        nick=nick.trim();
         if (!isNickAvailable(nick)) {
             try (Statement statement = connection.createStatement()) {
                 statement.execute("DELETE FROM " + SqliteDB.users + " WHERE " + SqliteDB.nick + " = '" + nick + "';");
@@ -197,6 +201,7 @@ public class SqliteDB implements Database {
     }
 
     private String getPassword(String nick) throws SQLException {
+        nick.trim();
         if (isNickAvailable(nick)) {
             throw new SQLException("No such user: " + nick);
         }
@@ -210,6 +215,7 @@ public class SqliteDB implements Database {
     }
 
     public void changePassword(String nick, String password) throws SQLException {
+        nick = nick.trim();
         if (isNickAvailable(nick)) {
             throw new SQLException("No such user: " + nick);
         }
@@ -221,6 +227,7 @@ public class SqliteDB implements Database {
     }
 
     public Statistics getStatistics(String nick) throws SQLException {
+        nick = nick.trim();
         Statistics statistics = new Statistics();
         if (isNickAvailable(nick)) {
             throw new SQLException("No such user: " + nick);
@@ -252,6 +259,7 @@ public class SqliteDB implements Database {
     }
 
     public void setStatistics(String nick, Statistics statistics) throws SQLException {
+        nick = nick.trim();
         if (isNickAvailable(nick)) {
             throw new SQLException("No such user: " + nick);
         }
