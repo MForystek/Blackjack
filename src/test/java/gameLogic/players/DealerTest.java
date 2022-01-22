@@ -16,15 +16,13 @@ class DealerTest {
     private Dealer ai;
     private Decks deck;
 
-    @BeforeEach
-    void beforeEach() {
+    @Test
+    void wantToDrawCard() {
+
         deck = new Decks(1);
         deck.setDecks(generateDeck());
         ai = new Dealer(deck.takeNextCard(),deck.takeNextCard());
-    }
-
-    @Test
-    void wantToDrawCard() {
+        ai.setDealerTurns(true);
 
         assertTrue(pickCard());
         assertTrue(pickCard());
@@ -34,9 +32,24 @@ class DealerTest {
 
         ai.clearGameData();
         createDealer();
+        ai.setDealerTurns(true);
 
         assertFalse(pickCard());
         assertEquals(21, ai.getTotalPoints());
+    }
+
+    @Test
+    void wantToDrawCardWithAceChange() {
+
+        deck = new Decks(1);
+        deck.setDecks(generateDeck2());
+        ai = new Dealer(deck.takeNextCard(),deck.takeNextCard());
+        ai.setDealerTurns(true);
+
+        assertTrue(pickCard());
+        assertTrue(pickCard());
+        assertTrue(pickCard());
+        assertEquals(18, ai.getTotalPoints());
     }
 
     private Stack<Card> generateDeck() {
@@ -50,6 +63,22 @@ class DealerTest {
         cards.add(new Card(CardColors.DIAMONDS, CardValues.FOUR));
         cards.add(new Card(CardColors.DIAMONDS, CardValues.THREE));
         cards.add(new Card(CardColors.DIAMONDS, CardValues.TWO));
+
+        return cards;
+    }
+
+    private Stack<Card> generateDeck2() {
+        Stack<Card> cards = new Stack<>();
+
+        cards.add(new Card(CardColors.DIAMONDS, CardValues.ACE11));
+        cards.add(new Card(CardColors.DIAMONDS, CardValues.KING));
+
+        cards.add(new Card(CardColors.DIAMONDS, CardValues.THREE));
+        cards.add(new Card(CardColors.DIAMONDS, CardValues.TWO));
+
+        cards.add(new Card(CardColors.DIAMONDS, CardValues.NINE));
+        cards.add(new Card(CardColors.DIAMONDS, CardValues.THREE));
+        cards.add(new Card(CardColors.DIAMONDS, CardValues.ACE11));
 
         return cards;
     }

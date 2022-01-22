@@ -270,9 +270,10 @@ public class HalfCasinoGame implements Game, TurnChoice {
         try {
             database.openConnection();
             Statistics tmp = database.getStatistics(dealer.getNick());
-            dealer.addCard(dealer.getVisibleCard());
-            dealer.addCard(dealer.getHiddenCard());
-            tmp.updateStatistics(dealer.isWinner(), dealer.getCards(), gameDurationInMilliseconds/1000);
+            ArrayList <Card> cards = (ArrayList<Card>)((ArrayList<Card>)dealer.getCards()).clone();
+            cards.add(dealer.getVisibleCard());
+            cards.add(dealer.getHiddenCard());
+            tmp.updateStatistics(dealer.isWinner(), cards, gameDurationInMilliseconds/1000);
             database.setStatistics(dealer.getNick(), tmp);
             database.closeConnection();
         } catch (SQLException e){
