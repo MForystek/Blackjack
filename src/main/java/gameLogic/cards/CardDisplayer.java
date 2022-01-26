@@ -11,6 +11,7 @@ public class CardDisplayer {
     private String extension = "jpg";
     public static final String CARD_SKIN_V_1 = "v1";
     public static final String CARD_SKIN_V_2 = "v2";
+    public static final String CARD_SKIN_V_3 = "v3";
 
     public CardDisplayer(Path directory) {
         this.baseDirectory = directory;
@@ -26,6 +27,7 @@ public class CardDisplayer {
         try {
             Files.createDirectories(Path.of(baseDirectory.toString(), CARD_SKIN_V_1));
             Files.createDirectories(Path.of(baseDirectory.toString(), CARD_SKIN_V_2));
+            Files.createDirectories(Path.of(baseDirectory.toString(), CARD_SKIN_V_3));
         } catch (IOException e) {
             System.err.println("Cannot create directories " + e.getMessage());
         }
@@ -35,21 +37,19 @@ public class CardDisplayer {
         cardSkinDirectory = CARD_SKIN_V_1;
     }
 
-    public void changeCardsSkins(){
-        cardSkinDirectory = switch (cardSkinDirectory){
-            case CARD_SKIN_V_1 -> CARD_SKIN_V_2;
-            default -> CARD_SKIN_V_1;
-        };
-    }
-
     public Path getPreviewCardForV1() {
         return Path.of(baseDirectory.toString(),
-                CARD_SKIN_V_1, "SA." + extension);
+                CARD_SKIN_V_1, "HA." + extension);
     }
 
     public Path getPreviewCardForV2() {
         return Path.of(baseDirectory.toString(),
-                CARD_SKIN_V_2, "SA." + extension);
+                CARD_SKIN_V_2, "HA." + extension);
+    }
+
+    public Path getPreviewCardForV3() {
+        return Path.of(baseDirectory.toString(),
+                CARD_SKIN_V_3, "HA." + extension);
     }
 
     public Path getFilePath(Card card) {
@@ -94,7 +94,8 @@ public class CardDisplayer {
      * @param cardSkinDirectory must be one of the CardDisplayer static constants
      */
     public void setCardSkinDirectory(String cardSkinDirectory) throws IllegalArgumentException{
-        if (cardSkinDirectory.equals(CARD_SKIN_V_1) || cardSkinDirectory.equals(CARD_SKIN_V_2)) {
+        if (cardSkinDirectory.equals(CARD_SKIN_V_1) || cardSkinDirectory.equals(CARD_SKIN_V_2)
+                || cardSkinDirectory.equals(CARD_SKIN_V_3)) {
             this.cardSkinDirectory = cardSkinDirectory;
         } else {
             throw new IllegalArgumentException(cardSkinDirectory + " is invalid");

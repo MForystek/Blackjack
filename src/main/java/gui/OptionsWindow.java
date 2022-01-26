@@ -16,6 +16,8 @@ public class OptionsWindow extends JFrame{
     private JLabel skinV2Label;
     private JButton changePasswordButton;
     private JButton backToMainMenuButton;
+    private JRadioButton skinV3RadioButton;
+    private JLabel skinV3Label;
 
     private ApplicationData appData;
 
@@ -31,13 +33,16 @@ public class OptionsWindow extends JFrame{
 
         ImageIcon skinV1 = new ImageIcon(appData.getCardDisplayer().getPreviewCardForV1().toString());
         ImageIcon skinV2 = new ImageIcon(appData.getCardDisplayer().getPreviewCardForV2().toString());
+        ImageIcon skinV3 = new ImageIcon(appData.getCardDisplayer().getPreviewCardForV3().toString());
 
         skinV1Label.setIcon(skinV1);
         skinV2Label.setIcon(skinV2);
+        skinV3Label.setIcon(skinV3);
 
         ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(skinV1RadioButton);
         buttonGroup.add(skinV2RadioButton);
+        buttonGroup.add(skinV3RadioButton);
 
         manageRadioButtons();
 
@@ -63,6 +68,8 @@ public class OptionsWindow extends JFrame{
                 break;
             case CardDisplayer.CARD_SKIN_V_2: skinV2RadioButton.setSelected(true);
                 break;
+            case CardDisplayer.CARD_SKIN_V_3: skinV3RadioButton.setSelected(true);
+                break;
         }
 
         skinV1RadioButton.addMouseListener(new MouseAdapter() {
@@ -74,6 +81,12 @@ public class OptionsWindow extends JFrame{
         skinV2RadioButton.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 appData.getCardDisplayer().setCardSkinDirectory(CardDisplayer.CARD_SKIN_V_2);
+            }
+        });
+
+        skinV3RadioButton.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                appData.getCardDisplayer().setCardSkinDirectory(CardDisplayer.CARD_SKIN_V_3);
             }
         });
     }

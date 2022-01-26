@@ -1,6 +1,9 @@
 package gameLogic.players;
 
 import gameLogic.cards.Card;
+import gameLogic.cards.CardValues;
+
+import java.util.ArrayList;
 
 public class Dealer extends Player implements AI {
     public static final int THRESHOLD_FOR_DEALER_TO_DRAW_CARDS = 16;
@@ -25,7 +28,38 @@ public class Dealer extends Player implements AI {
 
     private boolean canDrawCard () {
         int score = getTotalPoints();
-        return score <= THRESHOLD_FOR_DEALER_TO_DRAW_CARDS && !isEnded;
+        if (score <= THRESHOLD_FOR_DEALER_TO_DRAW_CARDS && !isEnded) {
+            return true;
+        } else if (score > 21) {
+            return canDropAceValue();
+        }
+        return false;
+    }
+
+    private boolean canDropAceValue(){
+        if (visibleCard.getCardValue().equals(CardValues.ACE11)) {
+            visibleCard.changeAceValue();
+            if (getTotalPoints() <= THRESHOLD_FOR_DEALER_TO_DRAW_CARDS && !isEnded) {
+                return true;
+            }
+        }
+
+        if (hiddenCard.getCardValue().equals(CardValues.ACE11)) {
+            hiddenCard.changeAceValue();
+            if (getTotalPoints() <= THRESHOLD_FOR_DEALER_TO_DRAW_CARDS && !isEnded) {
+                return true;
+            }
+        }
+
+        for (Card card : cards) {
+            if (card.getCardValue().equals(CardValues.ACE11)) {
+                card.changeAceValue();
+                if (getTotalPoints() <= THRESHOLD_FOR_DEALER_TO_DRAW_CARDS && !isEnded) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -62,10 +96,10 @@ public class Dealer extends Player implements AI {
         boolean hasAce = false;
         boolean hasTen = false;
         for (Card card : new Card[] {hiddenCard, visibleCard}) {
-            switch (card.getCardValue()){
-                case ACE11, ACE1: hasAce = true;
+            switch (card.getCardValue().toString()){
+                case "A": hasAce = true;
                     break;
-                case KING, QUEEN, JACK, TEN: hasTen = true;
+                case "10": hasTen = true;
                     break;
             }
             if(hasAce && hasTen) return true;
